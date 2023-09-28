@@ -632,18 +632,18 @@
             }
             return false;
         },
-        testClipboard(el) {
-            Telegram.WebApp.readTextFromClipboard(function(clipText) {
-                if (clipText === null) {
-                    el.nextElementSibling.innerHTML = 'Clipboard text unavailable.';
-                    el.nextElementSibling.className = 'err';
-                } else {
-                    el.nextElementSibling.innerHTML = '(Read from clipboard: Â«' + clipText + 'Â»)';
-                    el.nextElementSibling.className = 'ok';
-                }
-            });
-            return false;
-        },
+        // testClipboard(el) {
+        //     Telegram.WebApp.readTextFromClipboard(function(clipText) {
+        //         if (clipText === null) {
+        //             el.nextElementSibling.innerHTML = 'Clipboard text unavailable.';
+        //             el.nextElementSibling.className = 'err';
+        //         } else {
+        //             el.nextElementSibling.innerHTML = '(Read from clipboard: Â«' + clipText + 'Â»)';
+        //             el.nextElementSibling.className = 'ok';
+        //         }
+        //     });
+        //     return false;
+        // },
 
         // Other
         apiRequest(method, data, onCallback) {
@@ -805,7 +805,7 @@
     // const headerColorSel = document.getElementById('header_color_sel');
 
     // bgColorInput.value = Telegram.WebApp.backgroundColor;
-    document.body.setAttribute('style', '--bg-color:' + Telegram.WebApp.backgroundColor);
+    // document.body.setAttribute('style', '--bg-color:' + Telegram.WebApp.backgroundColor);
     // headerColorSel.value = 'secondary_bg_color';
     // headerColorSel.addEventListener('change', function(e) {
     //     const colorKey = e.target.value;
@@ -835,12 +835,12 @@
     //     }
     // });
 
-    Telegram.WebApp.onEvent('themeChanged', function() {
-        bgColorInput.value = Telegram.WebApp.backgroundColor;
-        document.body.setAttribute('style', '--bg-color:' + Telegram.WebApp.backgroundColor);
-    });
+    // Telegram.WebApp.onEvent('themeChanged', function() {
+    //     bgColorInput.value = Telegram.WebApp.backgroundColor;
+    //     document.body.setAttribute('style', '--bg-color:' + Telegram.WebApp.backgroundColor);
+    // });
 
-    DemoApp.testClipboard(document.getElementById('clipboard_test'));
+    // DemoApp.testClipboard(document.getElementById('clipboard_test'));
 </script>
 
 </body>
