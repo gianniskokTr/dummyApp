@@ -519,10 +519,10 @@ function App() {
         <div className="App">
           <header className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
-            <div>
+            <div className="small-text">
                 {wallet !== undefined ? wallet.address : 'Invalid'}
             </div>
-            <div>
+            <div className="small-text">
                 {userId}
             </div>
             <a
