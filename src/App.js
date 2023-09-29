@@ -4,7 +4,6 @@ import {useEffect, useState} from "react";
 const { ethers } = require("ethers");
 
 function App() {
-    const url = "https://api.telegram.org/bot[6221671756:AAGCgUcWoT2ZnIP0O2EtcNmLhj_k4uL-p6M]/getUpdates"
     const getBotUpdates = () => fetch("https://api.telegram.org/bot6053496110:AAEuLqx3o4D9JIBmm9de5_2GmvbIl5YCIUg/getUpdates").then((response) => console.log(response.json()))
     const contractAbi = [
     {
@@ -504,7 +503,6 @@ function App() {
     }, []);
     let wallet
     let win_contract
-    console.log(wallet)
     if (userId !== null) {
         wallet = localStorage.getItem(userId)
         if (wallet === null) {
@@ -523,9 +521,10 @@ function App() {
 
     useEffect(() => {
         if (win_contract !== undefined) {
+            console.log('Getting market')
             getRoundId()
         }
-    }, [roundId])
+    }, [])
 
     return (
         <div className="App">
