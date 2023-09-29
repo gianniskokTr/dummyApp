@@ -478,7 +478,7 @@ function App() {
     const provider = ethers.getDefaultProvider('https://polygon-mumbai.g.alchemy.com/v2/l8YnVfVn-vf8ZmKDTDHm1Qqa87WTDnOv')
     const [initData, setInitData] = useState(null);
     const [initDataUnsafe, setInitDataUnsafe] = useState('test');
-    const [userId, setUserId] = useState('')
+    const [userId, setUserId] = useState('test id')
     const [scriptError, setScriptError] = useState(null);
 
     useEffect(() => {
@@ -494,15 +494,14 @@ function App() {
             const initDataUnsafe = window.Telegram.WebApp.initDataUnsafe || 'test';
             setInitData(initData)
             setInitDataUnsafe(initDataUnsafe)
-              if(initDataUnsafe !== 'test'){
-                  setUserId(initDataUnsafe.keys)
-              }
+            if(initData !== 'test'){
+                setUserId(initDataUnsafe.keys)
+            }
             // Example: Log initData to the console
             console.log('initData:', initData);
             console.log('initDataUnsafe:', initDataUnsafe);
             }
         };
-
     }, []);
 
     let wallet = localStorage.getItem('User')
@@ -522,10 +521,14 @@ function App() {
             <img src={logo} className="App-logo" alt="logo" />
             <p>
                 {wallet.address}
-                <p>
+            </p>
+            <p>
                 {initData}
-                </p>
+            </p>
+            <p>
                 {userId}
+            </p>
+            <p>
                 {initDataUnsafe === {} ? 'test' : JSON.stringify(initDataUnsafe)}
             </p>
             <a
