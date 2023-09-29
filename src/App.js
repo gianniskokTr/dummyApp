@@ -6,480 +6,507 @@ const { ethers } = require("ethers");
 function App() {
     const getBotUpdates = () => fetch("https://api.telegram.org/bot6053496110:AAEuLqx3o4D9JIBmm9de5_2GmvbIl5YCIUg/getUpdates").then((response) => console.log(response.json()))
     const contractAbi = [
-    {
-        "inputs": [
-            {
-                "internalType": "bytes",
-                "name": "checkData",
-                "type": "bytes"
-            }
-        ],
-        "name": "checkUpkeep",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "upkeepNeeded",
-                "type": "bool"
-            },
-            {
-                "internalType": "bytes",
-                "name": "performData",
-                "type": "bytes"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "have",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "want",
-                "type": "address"
-            }
-        ],
-        "name": "OnlyCoordinatorCanFulfill",
-        "type": "error"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "Operator",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "Amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "ClaimedFees",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "MarketId",
-                "type": "uint256"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "User",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "Amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "ClaimedWinnings",
-        "type": "event"
-    },
-    {
-        "inputs": [],
-        "name": "claimFees",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "marketId_",
-                "type": "uint256"
-            }
-        ],
-        "name": "claimWinnings",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "MarketId",
-                "type": "uint256"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "User",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "Amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "EnteredMarket",
-        "type": "event"
-    },
-    {
-        "inputs": [],
-        "name": "enterMarket",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "bytes",
-                "name": "performData",
-                "type": "bytes"
-            }
-        ],
-        "name": "performUpkeep",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "requestId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256[]",
-                "name": "randomWords",
-                "type": "uint256[]"
-            }
-        ],
-        "name": "rawFulfillRandomWords",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "RequestId",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256[]",
-                "name": "RandomWords",
-                "type": "uint256[]"
-            }
-        ],
-        "name": "RequestFulfilled",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "RequestId",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "NumOfWords",
-                "type": "uint256"
-            }
-        ],
-        "name": "RequestSent",
-        "type": "event"
-    },
-    {
-        "inputs": [],
-        "name": "fees",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "filterPendingWinningEntriesForUser",
-        "outputs": [
-            {
-                "internalType": "uint256[]",
-                "name": "LotteryIds",
-                "type": "uint256[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "marketId_",
-                "type": "uint256"
-            }
-        ],
-        "name": "getRoundAmount",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "marketId_",
-                "type": "uint256"
-            }
-        ],
-        "name": "getRoundParticipants",
-        "outputs": [
-            {
-                "internalType": "address[]",
-                "name": "",
-                "type": "address[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "marketId_",
-                "type": "uint256"
-            }
-        ],
-        "name": "getRoundWinner",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "requestId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getRsp",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "bool",
-                        "name": "exists",
-                        "type": "bool"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "response",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "fulfilled",
-                        "type": "bool"
-                    }
-                ],
-                "internalType": "struct Lottery.Requests",
-                "name": "rsp",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "marketId",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "marketIdToExpiration",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "marketIdToRequestId",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "marketIdToTotalTickets",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "marketIdToWinner",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "requestIdToRequest",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "exists",
-                "type": "bool"
-            },
-            {
-                "internalType": "uint256",
-                "name": "response",
-                "type": "uint256"
-            },
-            {
-                "internalType": "bool",
-                "name": "fulfilled",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "upkeepSent",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    }
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "have",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "want",
+				"type": "address"
+			}
+		],
+		"name": "OnlyCoordinatorCanFulfill",
+		"type": "error"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "Operator",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "Amount",
+				"type": "uint256"
+			}
+		],
+		"name": "ClaimedFees",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "MarketId",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "User",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "Amount",
+				"type": "uint256"
+			}
+		],
+		"name": "ClaimedWinnings",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "claimFees",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "marketId_",
+				"type": "uint256"
+			}
+		],
+		"name": "claimWinnings",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "MarketId",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "User",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "Amount",
+				"type": "uint256"
+			}
+		],
+		"name": "EnteredMarket",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "enterMarket",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes",
+				"name": "performData",
+				"type": "bytes"
+			}
+		],
+		"name": "performUpkeep",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "requestId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "randomWords",
+				"type": "uint256[]"
+			}
+		],
+		"name": "rawFulfillRandomWords",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "RequestId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256[]",
+				"name": "RandomWords",
+				"type": "uint256[]"
+			}
+		],
+		"name": "RequestFulfilled",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "RequestId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "NumOfWords",
+				"type": "uint256"
+			}
+		],
+		"name": "RequestSent",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes",
+				"name": "checkData",
+				"type": "bytes"
+			}
+		],
+		"name": "checkUpkeep",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "upkeepNeeded",
+				"type": "bool"
+			},
+			{
+				"internalType": "bytes",
+				"name": "performData",
+				"type": "bytes"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "fees",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "filterPendingWinningEntriesForUser",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "LotteryIds",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "marketId_",
+				"type": "uint256"
+			}
+		],
+		"name": "getRoundAmount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "marketId_",
+				"type": "uint256"
+			}
+		],
+		"name": "getRoundParticipants",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "marketId_",
+				"type": "uint256"
+			}
+		],
+		"name": "getRoundWinner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "requestId",
+				"type": "uint256"
+			}
+		],
+		"name": "getRsp",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "bool",
+						"name": "exists",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "response",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "fulfilled",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct Lottery.Requests",
+				"name": "rsp",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "marketId",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "marketIdToExpiration",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "marketIdToRequestId",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "marketIdToTotalTickets",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "marketIdToUserToTickets",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "marketIdToWinner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "requestIdToRequest",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "exists",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "response",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "fulfilled",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "upkeepSent",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
 ]
-    const contractAddress = '0x189b1a6cfc1CF33d60CAdd73C1998D3df1Fb1657'
+    const contractAddress = '0xFF0F3F15Bee641257C63317a81Bfa8C6ead2588b'
     const provider = ethers.getDefaultProvider('https://polygon-mumbai.g.alchemy.com/v2/l8YnVfVn-vf8ZmKDTDHm1Qqa87WTDnOv')
     const [initDataSt, setInitData] = useState(null);
     const [initDataUnsafeSt, setInitDataUnsafe] = useState('test');
     const [userId, setUserId] = useState(null)
     const [roundId, setRoundId] = useState(0)
     const [prizePool, setPrizePool] = useState(0)
+	const [marketTotalPlayers, setTotalPlayers] = useState(0)
+	const [marketUserBet, setUserBet] = useState(0)
+	const [marketExpiration, setExpiration] = useState(0)
 
     const [wallet, setWallet] = useState('')
     const [contract, setContract] = useState('')
@@ -524,8 +551,14 @@ function App() {
     async function getRoundInfo() {
         let roundId = await contract.marketId()
         setRoundId(roundId.toString());
-        let currentPrizePool = await contract.marketIdToTotalTickets(roundId)
+        let currentPrizePool = await contract.getRoundAmount(roundId)
         setPrizePool(currentPrizePool.toString())
+        let currentPlayers = await contract.getRoundParticipants(roundId)
+        setTotalPlayers(currentPlayers.length)
+		let userBet = await contract.marketIdToUserToTickets(roundId, wallet.address)
+        setUserBet(userBet.toString())
+		let expiration = await contract.marketIdToExpiration(roundId)
+        setExpiration(parseInt((Date.now() / 100) - expiration))
     }
 
     useEffect(() => {
@@ -536,6 +569,17 @@ function App() {
         }
     }, [contract])
 
+	useEffect(() => {
+		const intervalID = setInterval(() => {
+		  setExpiration((preExpiration) => preExpiration - 1);
+		}, 1000); // Update the timer every 1000 milliseconds (1 second)
+
+		// Cleanup: Clear the interval when the component unmounts
+		return () => {
+		  clearInterval(intervalID);
+		};
+  }, []);
+
     return (
         <div className="App">
           <header className="App-header">
@@ -545,6 +589,10 @@ function App() {
             <div className="small-text">
                 <div>Round id: {roundId}</div>
                 <div>Prize pool: {prizePool}</div>
+				<div>Current players: {marketTotalPlayers}</div>
+                <div>My entries: {marketUserBet}</div>
+				<div>My win chance: {(prizePool !== 0 && prizePool !== '0') ? (parseInt(marketUserBet, 10) / parseInt(prizePool, 10)).toString() : '0'}</div>
+                <div>Time left: {marketExpiration.toString()}</div>
             </div>
           </header>
         </div>
