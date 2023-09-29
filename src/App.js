@@ -573,7 +573,7 @@ function App() {
   	};
 
 	async function enterRound() {
-		const con = contract.connenct(wallet)
+		const con = contract.connect(wallet)
 		await con.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())})
 	}
 
