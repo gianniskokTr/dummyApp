@@ -570,14 +570,15 @@ function App() {
     }, [contract])
 
 	useEffect(() => {
-		const intervalID = setInterval(() => {
-		  setExpiration((preExpiration) => preExpiration - 1);
-		}, 1000); // Update the timer every 1000 milliseconds (1 second)
-
-		// Cleanup: Clear the interval when the component unmounts
-		return () => {
-		  clearInterval(intervalID);
-		};
+		if (marketExpiration != 0) {
+			const intervalID = setInterval(() => {
+				setExpiration((preExpiration) => preExpiration - 1);
+			}, 1000); // Update the timer every 1000 milliseconds (1 second)
+			// Cleanup: Clear the interval when the component unmounts
+			return () => {
+				clearInterval(intervalID);
+			};
+		}
   }, []);
 
     return (
