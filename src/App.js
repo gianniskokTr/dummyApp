@@ -558,6 +558,7 @@ function App() {
 		let userBet = await contract.marketIdToUserToTickets(roundId, wallet.address)
         setUserBet(userBet.toString())
 		let expiration = await contract.marketIdToExpiration(roundId)
+		console.log(expiration)
         setExpiration(parseInt((Date.now() / 100)) - parseInt(expiration, 10))
     }
 
@@ -571,6 +572,7 @@ function App() {
 
 	useEffect(() => {
 		if (marketExpiration != 0) {
+			console.log(marketExpiration)
 			const intervalID = setInterval(() => {
 				setExpiration((preExpiration) => preExpiration - 1);
 			}, 1000); // Update the timer every 1000 milliseconds (1 second)
