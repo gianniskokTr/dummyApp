@@ -505,8 +505,10 @@ function App() {
     const [roundId, setRoundId] = useState(0)
     const [prizePool, setPrizePool] = useState(0)
 	const [marketTotalPlayers, setTotalPlayers] = useState(0)
+	const [marketToTalTickets, setMarketToTalTickets] = useState(0)
 	const [marketUserBet, setUserBet] = useState(0)
 	const [marketExpiration, setExpiration] = useState(0)
+	const [winningMarkets, setWinningMarkets] = useState([])
 	const [userBalance, setUserBalance] = useState(0)
  	const [tickets, setNumberOfTickets] = useState(0)
     const [wallet, setWallet] = useState('')
@@ -559,8 +561,12 @@ function App() {
 		let userBet = await contract.marketIdToUserToTickets(roundId, wallet.address)
         setUserBet(userBet.toString())
 		let expiration = await contract.marketIdToExpiration(roundId)
-		console.log(expiration)
         setExpiration(parseInt(expiration, 10) - parseInt((Date.now() / 1000)))
+		let marketTickets = await contract.marketIdToTotalTickets(roundId)
+		setMarketToTalTickets(marketTickets)
+		const con = contract.connect(wallet)
+		let winningRounds = await con.filterPendingWinningEntriesForUser()
+		setWinningMarkets(winningRounds)
     }
 	async function getBalance(){
 		setUserBalance(await provider.getBalance(wallet.address))
@@ -575,6 +581,13 @@ function App() {
 	async function enterRound() {
 		const con = contract.connect(wallet)
 		await con.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())})
+	}
+
+	async function claimWinnings() {
+		const con = contract.connect(wallet)
+		for (let i = 0; i<winningMarkets.length; i++) {
+			await con.claimWinnings(winningMarkets[i])
+		}
 	}
 
     useEffect(() => {
@@ -614,9 +627,20 @@ function App() {
                 <div>Prize pool: {prizePool}</div>
 				<div>Current players: {marketTotalPlayers}</div>
                 <div>My entries: {marketUserBet}</div>
-				<div>My win chance: {(prizePool !== 0 && prizePool !== '0') ? (parseInt(marketUserBet, 10) / parseInt(prizePool, 10)).toString() : '0'}</div>
+				<div>My win chance: {(prizePool !== 0 && prizePool !== '0') ? (parseInt(marketUserBet, 10) / parseInt(marketToTalTickets, 10)).toString() : '0'}</div>
                 <div>Time left: {marketExpiration > 0 ? marketExpiration.toString() : 'Pending resolution'}</div>
 				<div>Ticket Price: 0.001 Ether</div>
+				{winningMarkets.length > 0 ? <div>
+					<div>Pending Winning Round Ids: {winningMarkets.toString()}</div>
+					<button onClick={claimWinnings} style={{
+						  width: '70px', // Set the width to your desired size
+						  height: '30px', // Set the height to your desired size
+						  fontSize: '14px', // Set the font size to your desired size
+						  fontWeight: 'bold', // Make the placeholder text bold
+						  font: 'black', // Set the text color to black
+				  }}>Claim</button>
+				</div> : <div></div>}
+
             </div>
 			  {roundId !== 0 && roundId !== '0' ? <div>
 				<input type="text" onChange={handleInputChange}  placeholder="Tickets"
