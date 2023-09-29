@@ -559,7 +559,7 @@ function App() {
         setUserBet(userBet.toString())
 		let expiration = await contract.marketIdToExpiration(roundId)
 		console.log(expiration)
-        setExpiration(parseInt((Date.now() / 100)) - parseInt(expiration, 10))
+        setExpiration(parseInt(expiration, 10) - parseInt((Date.now() / 100)))
     }
 
     useEffect(() => {
