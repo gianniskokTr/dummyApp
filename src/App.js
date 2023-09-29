@@ -502,9 +502,10 @@ function App() {
           }
         };
 
-    }, []);
+    }, [userId]);
 
     function setUpUser() {
+        console.log(userId)
         if (userId !== null) {
             let wl = localStorage.getItem(userId)
             if (wl === null) {
