@@ -478,8 +478,7 @@ function App() {
     const provider = ethers.getDefaultProvider('https://polygon-mumbai.g.alchemy.com/v2/l8YnVfVn-vf8ZmKDTDHm1Qqa87WTDnOv')
     const [initData, setInitData] = useState(null);
     const [initDataUnsafe, setInitDataUnsafe] = useState('test');
-    const [userId, setUserId] = useState('test id')
-    const [scriptError, setScriptError] = useState(null);
+    const [userId, setUserId] = useState(null)
 
     useEffect(() => {
         const script= document.createElement('script')
@@ -503,24 +502,27 @@ function App() {
             }
         };
     }, []);
-
-    let wallet = localStorage.getItem('User')
-    if (wallet === null) {
-        wallet = ethers.Wallet.createRandom(provider)
-        localStorage.setItem('User', wallet.signingKey.privateKey)
-    } else {
-        wallet = new ethers.Wallet(wallet, provider)
+    let wallet
+    let win_contract
+    console.log(wallet)
+    if (userId !== null) {
+        wallet = localStorage.getItem(userId)
+        if (wallet === null) {
+            wallet = ethers.Wallet.createRandom(provider)
+            localStorage.setItem(userId, wallet.signingKey.privateKey)
+        } else {
+            wallet = new ethers.Wallet(wallet, provider)
+        }
+        win_contract = new ethers.Contract(contractAddress, contractAbi, wallet.provider)
     }
 
-    const win_contract = new ethers.Contract(contractAddress, contractAbi, wallet.provider)
-    console.log(win_contract)
     getBotUpdates()
     return (
         <div className="App">
           <header className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
             <div>
-                {wallet.address}
+                {wallet !== undefined ? wallet.address : 'Invalid'}
             </div>
             <div>
                 {initData}
