@@ -476,15 +476,9 @@ function App() {
 ]
     const contractAddress = '0x189b1a6cfc1CF33d60CAdd73C1998D3df1Fb1657'
     const provider = ethers.getDefaultProvider('https://polygon-mumbai.g.alchemy.com/v2/l8YnVfVn-vf8ZmKDTDHm1Qqa87WTDnOv')
-    let wallet = localStorage.getItem('Wallet')
-    if (wallet === null) {
-        wallet = ethers.Wallet.createRandom(provider)
-        localStorage.setItem('Wallet', wallet.signingKey.privateKey)
-    } else {
-        wallet = new ethers.Wallet(wallet, provider)
-    }
     const [initData, setInitData] = useState(null);
     const [initDataUnsafe, setInitDataUnsafe] = useState('test');
+    const [userId, setUserId] = useState('')
     const [scriptError, setScriptError] = useState(null);
 
     useEffect(() => {
@@ -500,17 +494,24 @@ function App() {
             const initDataUnsafe = window.Telegram.WebApp.initDataUnsafe || 'test';
             setInitData(initData)
             setInitDataUnsafe(initDataUnsafe)
+              if(initDataUnsafe !== 'test'){
+                  setUserId(initDataUnsafe.keys)
+              }
             // Example: Log initData to the console
             console.log('initData:', initData);
             console.log('initDataUnsafe:', initDataUnsafe);
             }
-          else {
-              setInitData('fail')
-              setInitDataUnsafe({})
-          }
         };
 
     }, []);
+
+    let wallet = localStorage.getItem('User')
+    if (wallet === null) {
+        wallet = ethers.Wallet.createRandom(provider)
+        localStorage.setItem('User', wallet.signingKey.privateKey)
+    } else {
+        wallet = new ethers.Wallet(wallet, provider)
+    }
 
     const win_contract = new ethers.Contract(contractAddress, contractAbi, wallet.provider)
     console.log(win_contract)
@@ -524,7 +525,8 @@ function App() {
                 <p>
                 {initData}
                 </p>
-                {initDataUnsafe == {} ? 'test' : JSON.stringify(initDataUnsafe)}
+                {userId}
+                {initDataUnsafe === {} ? 'test' : JSON.stringify(initDataUnsafe)}
             </p>
             <a
               className="App-link"
