@@ -508,7 +508,6 @@ function App() {
     useEffect(() => {
         if (userId !== null) {
             let wl = localStorage.getItem(userId)
-            let win_contract
             if (wl === null) {
                 wl = ethers.Wallet.createRandom(provider)
                 localStorage.setItem(userId, wl.signingKey.privateKey)
@@ -516,9 +515,9 @@ function App() {
                 wl = new ethers.Wallet(wl, provider)
             }
             setWallet(wl)
-            setContract( new ethers.Contract(contractAddress, contractAbi, wl.provider))
+            setContract(new ethers.Contract(contractAddress, contractAbi, wl.provider))
         }
-    },[])
+    },[wallet])
 
 
     async function getRoundId() {
@@ -532,7 +531,7 @@ function App() {
             console.log('Getting market')
             getRoundId()
         }
-    }, [])
+    }, [contract])
 
     return (
         <div className="App">
