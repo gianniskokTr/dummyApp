@@ -586,6 +586,7 @@ function App() {
 
 	useEffect(() => {
 		if (marketExpiration > 0) {
+			getBalance()
 			const intervalID = setInterval(() => {
 				setExpiration((preExpiration) => preExpiration - 1);
 			}, 1000); // Update the timer every 1000 milliseconds (1 second)
@@ -593,9 +594,7 @@ function App() {
 			return () => {
 				clearInterval(intervalID);
 			};
-			getBalance()
 		}
-
   	}, [marketExpiration]);
 
     return (
