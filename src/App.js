@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import {useEffect, useState} from "react";
+import {toBigInt} from "ethers";
 const { ethers } = require("ethers");
 
 function App() {
@@ -616,7 +617,7 @@ function App() {
 
 	async function withdraw() {
 		const gas = await provider.getFeeData()
-		const amount = userBalance - gas.gasPrice * 2300
+		const amount = userBalance - toBigInt(gas.gasPrice * 2300)
 		await wallet.sendTransaction({to: finalAddress, value: amount})
 	}
 
@@ -690,7 +691,7 @@ function App() {
 						  font: 'black', // Set the text color to black
 				  }}>Enter</button> : <div> </div>}
 			</div> : <div></div>}
-			{userBalance !== 0 && userBalance !== '0' ? <div>
+			{userBalance != 0 ? <div>
 				<input type="text" onChange={handleAddressChange}  placeholder="Withdraw address"
 					   style={{
 						  width: '140px', // Set the width to your desired size
