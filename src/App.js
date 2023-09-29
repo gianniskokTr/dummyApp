@@ -507,6 +507,7 @@ function App() {
 	const [marketTotalPlayers, setTotalPlayers] = useState(0)
 	const [marketUserBet, setUserBet] = useState(0)
 	const [marketExpiration, setExpiration] = useState(0)
+	const [userBalance, setUserBalance] = useState(0)
 
     const [wallet, setWallet] = useState('')
     const [contract, setContract] = useState('')
@@ -562,6 +563,11 @@ function App() {
         setExpiration(parseInt(expiration, 10) - parseInt((Date.now() / 1000)))
     }
 
+	async function getBalance(){
+		setUserBalance(await provider.getBalance(wallet.address))
+	}
+
+
     useEffect(() => {
         console.log(contract)
         if (contract !== '') {
@@ -580,14 +586,21 @@ function App() {
 			return () => {
 				clearInterval(intervalID);
 			};
+			getBalance()
 		}
+
   }, [marketExpiration]);
+
+
 
     return (
         <div className="App">
           <header className="App-header">
             <div className="small-text">
                 {wallet !== '' ? 'User address: ' + wallet.address : 'Invalid'}
+            </div>
+			<div className="small-text">
+                {wallet !== '' ? 'User balance: ' + userBalance : 'Invalid'}
             </div>
             <div className="small-text">
                 <div>Round id: {roundId}</div>
@@ -597,6 +610,7 @@ function App() {
 				<div>My win chance: {(prizePool !== 0 && prizePool !== '0') ? (parseInt(marketUserBet, 10) / parseInt(prizePool, 10)).toString() : '0'}</div>
                 <div>Time left: {marketExpiration > 0 ? marketExpiration.toString() : 'Pending resolution'}</div>
             </div>
+
           </header>
         </div>
     );
