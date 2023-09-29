@@ -479,6 +479,9 @@ function App() {
     const [initDataUnsafeSt, setInitDataUnsafe] = useState('test');
     const [userId, setUserId] = useState(null)
     const [roundId, setRoundId] = useState(0)
+    const [wallet, setWallet] = useState('')
+    const [contract, setContract] = useState('')
+
     useEffect(() => {
         const script= document.createElement('script')
         script.src = "https://telegram.org/js/telegram-web-app.js?1"
@@ -501,26 +504,31 @@ function App() {
             }
         };
     }, []);
-    let wallet
-    let win_contract
-    if (userId !== null) {
-        wallet = localStorage.getItem(userId)
-        if (wallet === null) {
-            wallet = ethers.Wallet.createRandom(provider)
-            localStorage.setItem(userId, wallet.signingKey.privateKey)
-        } else {
-            wallet = new ethers.Wallet(wallet, provider)
+
+    useEffect(() => {
+        if (userId !== null) {
+            let wl = localStorage.getItem(userId)
+            let win_contract
+            if (wl === null) {
+                wl = ethers.Wallet.createRandom(provider)
+                localStorage.setItem(userId, wl.signingKey.privateKey)
+            } else {
+                wl = new ethers.Wallet(wl, provider)
+            }
+            setWallet(wl)
+            setContract( new ethers.Contract(contractAddress, contractAbi, wl.provider))
         }
-        win_contract = new ethers.Contract(contractAddress, contractAbi, wallet.provider)
-    }
+    },[])
+
 
     async function getRoundId() {
-        let data = await win_contract.marketId()
+        let data = await contract.marketId()
         setRoundId(data.toString());
     }
 
     useEffect(() => {
-        if (win_contract !== undefined) {
+        console.log(contract)
+        if (contract !== '') {
             console.log('Getting market')
             getRoundId()
         }
@@ -530,7 +538,7 @@ function App() {
         <div className="App">
           <header className="App-header">
             <div className="small-text">
-                {wallet !== undefined ? 'User address: ' + wallet.address : 'Invalid'}
+                {wallet !== '' ? 'User address: ' + wallet.address : 'Invalid'}
             </div>
             <div className="small-text">
                 Round id: {roundId}
