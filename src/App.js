@@ -573,7 +573,8 @@ function App() {
   	};
 
 	async function enterRound() {
-		await contract.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())})
+		const con = contract.connenct(wallet)
+		await con.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())})
 	}
 
     useEffect(() => {
@@ -596,6 +597,8 @@ function App() {
 			};
 		}
   	}, [marketExpiration]);
+
+
 
     return (
         <div className="App">
