@@ -515,8 +515,6 @@ function App() {
         }
         win_contract = new ethers.Contract(contractAddress, contractAbi, wallet.provider)
     }
-
-    getBotUpdates()
     return (
         <div className="App">
           <header className="App-header">
@@ -525,13 +523,7 @@ function App() {
                 {wallet !== undefined ? wallet.address : 'Invalid'}
             </div>
             <div>
-                {initData}
-            </div>
-            <div>
                 {userId}
-            </div>
-            <div>
-                {initDataUnsafe === {} ? 'test' : JSON.stringify(initDataUnsafe)}
             </div>
             <a
               className="App-link"
