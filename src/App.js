@@ -479,6 +479,8 @@ function App() {
     const [initDataUnsafeSt, setInitDataUnsafe] = useState('test');
     const [userId, setUserId] = useState(null)
     const [roundId, setRoundId] = useState(0)
+    const [prizePool, setPrizePool] = useState(0)
+
     const [wallet, setWallet] = useState('')
     const [contract, setContract] = useState('')
 
@@ -505,7 +507,6 @@ function App() {
     }, [userId]);
 
     function setUpUser() {
-        console.log(userId)
         if (userId !== null) {
             let wl = localStorage.getItem(userId)
             if (wl === null) {
@@ -520,16 +521,18 @@ function App() {
     }
 
 
-    async function getRoundId() {
-        let data = await contract.marketId()
-        setRoundId(data.toString());
+    async function getRoundInfo() {
+        let roundId = await contract.marketId()
+        setRoundId(roundId.toString());
+        let currentPrizePool = await contract.marketIdToTotalTickets(roundId)
+        setPrizePool(currentPrizePool.toString())
     }
 
     useEffect(() => {
         console.log(contract)
         if (contract !== '') {
             console.log('Getting market')
-            getRoundId()
+            getRoundInfo()
         }
     }, [contract])
 
@@ -540,7 +543,8 @@ function App() {
                 {wallet !== '' ? 'User address: ' + wallet.address : 'Invalid'}
             </div>
             <div className="small-text">
-                Round id: {roundId}
+                <div>Round id: {roundId}</div>
+                <div>Prize pool: {prizePool}</div>
             </div>
           </header>
         </div>
