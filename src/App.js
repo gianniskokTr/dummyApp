@@ -498,14 +498,13 @@ function App() {
             if(initData !== 'test'){
                 setUserId(initDataUnsafe['user']['id'])
             }
-            // Example: Log initData to the console
-            console.log('initData:', initData);
-            console.log('initDataUnsafe:', initDataUnsafe);
-            }
+            setUpUser()
+          }
         };
+
     }, []);
 
-    useEffect(() => {
+    function setUpUser() {
         if (userId !== null) {
             let wl = localStorage.getItem(userId)
             if (wl === null) {
@@ -517,7 +516,7 @@ function App() {
             setWallet(wl)
             setContract(new ethers.Contract(contractAddress, contractAbi, wl.provider))
         }
-    },[wallet])
+    }
 
 
     async function getRoundId() {
