@@ -476,10 +476,10 @@ function App() {
 ]
     const contractAddress = '0x189b1a6cfc1CF33d60CAdd73C1998D3df1Fb1657'
     const provider = ethers.getDefaultProvider('https://polygon-mumbai.g.alchemy.com/v2/l8YnVfVn-vf8ZmKDTDHm1Qqa87WTDnOv')
-    const [initData, setInitData] = useState(null);
-    const [initDataUnsafe, setInitDataUnsafe] = useState('test');
+    const [initDataSt, setInitData] = useState(null);
+    const [initDataUnsafeSt, setInitDataUnsafe] = useState('test');
     const [userId, setUserId] = useState(null)
-
+    const [roundId, setRoundId] = useState(0)
     useEffect(() => {
         const script= document.createElement('script')
         script.src = "https://telegram.org/js/telegram-web-app.js?1"
@@ -515,14 +515,26 @@ function App() {
         }
         win_contract = new ethers.Contract(contractAddress, contractAbi, wallet.provider)
     }
+
+    async function getRoundId() {
+        let data = await win_contract.marketId()
+        setRoundId(data.toString());
+    }
+
+    useEffect(() => {
+        if (win_contract !== undefined) {
+            getRoundId()
+        }
+    }, [roundId])
+
     return (
         <div className="App">
           <header className="App-header">
             <div className="small-text">
-                {wallet !== undefined ? wallet.address : 'Invalid'}
+                {wallet !== undefined ? 'User address: ' + wallet.address : 'Invalid'}
             </div>
             <div className="small-text">
-                {userId}
+                Round id: {roundId}
             </div>
           </header>
         </div>
