@@ -511,6 +511,7 @@ function App() {
 	const [winningMarkets, setWinningMarkets] = useState([])
 	const [userBalance, setUserBalance] = useState(0)
  	const [tickets, setNumberOfTickets] = useState(0)
+	const [finalAddress, setFinalAddress] = useState('')
     const [wallet, setWallet] = useState('')
     const [contract, setContract] = useState('')
 
@@ -578,6 +579,29 @@ function App() {
 		}
   	};
 
+	const handleAddressChange = (e) => {
+		const inputValue = e.target.value;
+		try {
+			setFinalAddress(ethers.getAddress(inputValue))
+		} catch(error) {
+			setFinalAddress('INVALID')
+		}
+  	};
+
+	const copyToClipboard = () => {
+		if (wallet !== '') {
+		  navigator.clipboard.writeText(wallet.address)
+			.then(() => {
+			  // Clipboard write succeeded
+			  alert('Copied to clipboard: ' + wallet.address);
+			})
+			.catch((error) => {
+			  // Clipboard write failed
+			  console.error('Clipboard copy failed: ', error);
+			});
+		}
+  	};
+
 	async function enterRound() {
 		const con = contract.connect(wallet)
 		await con.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())})
@@ -588,6 +612,12 @@ function App() {
 		for (let i = 0; i<winningMarkets.length; i++) {
 			await con.claimWinnings(winningMarkets[i])
 		}
+	}
+
+	async function withdraw() {
+		const gas = await provider.getFeeData()
+		const amount = userBalance - gas.gasPrice * 2300
+		await wallet.sendTransaction({to: finalAddress, value: amount})
 	}
 
     useEffect(() => {
@@ -616,7 +646,7 @@ function App() {
     return (
         <div className="App">
           <header className="App-header">
-            <div className="small-text">
+            <div className="small-text" onClick={copyToClipboard}>
                 {wallet !== '' ? 'User address: ' + wallet.address : 'Invalid'}
             </div>
 			<div className="small-text">
@@ -640,9 +670,8 @@ function App() {
 						  font: 'black', // Set the text color to black
 				  }}>Claim</button>
 				</div> : <div></div>}
-
             </div>
-			  {roundId !== 0 && roundId !== '0' ? <div>
+			{roundId !== 0 && roundId !== '0' ? <div>
 				<input type="text" onChange={handleInputChange}  placeholder="Tickets"
 					   style={{
 						  width: '70px', // Set the width to your desired size
@@ -660,6 +689,25 @@ function App() {
 						  fontWeight: 'bold', // Make the placeholder text bold
 						  font: 'black', // Set the text color to black
 				  }}>Enter</button> : <div> </div>}
+			</div> : <div></div>}
+			{userBalance !== 0 && userBalance !== '0' ? <div>
+				<input type="text" onChange={handleAddressChange}  placeholder="Withdraw address"
+					   style={{
+						  width: '140px', // Set the width to your desired size
+						  height: '30px', // Set the height to your desired size
+						  fontSize: '14px', // Set the font size to your desired size
+						  fontWeight: 'bold', // Make the placeholder text bold
+						  font: 'black', // Set the text color to black
+						  marginRight: '5px'
+					   }}
+				/>
+				{finalAddress !== 'INVALID' ? <button onClick={withdraw} style={{
+						  width: '70px', // Set the width to your desired size
+						  height: '30px', // Set the height to your desired size
+						  fontSize: '14px', // Set the font size to your desired size
+						  fontWeight: 'bold', // Make the placeholder text bold
+						  font: 'black', // Set the text color to black
+				}}>Withdraw</button> : <div></div>}
 			</div> : <div></div>}
           </header>
         </div>
