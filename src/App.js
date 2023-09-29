@@ -495,7 +495,7 @@ function App() {
             setInitData(initData)
             setInitDataUnsafe(initDataUnsafe)
             if(initData !== 'test'){
-                setUserId(initDataUnsafe.keys())
+                setUserId(initDataUnsafe)
             }
             // Example: Log initData to the console
             console.log('initData:', initData);
@@ -519,18 +519,18 @@ function App() {
         <div className="App">
           <header className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
-            <p>
+            <div>
                 {wallet.address}
-            </p>
-            <p>
+            </div>
+            <div>
                 {initData}
-            </p>
-            <p>
+            </div>
+            <div>
                 {userId}
-            </p>
-            <p>
+            </div>
+            <div>
                 {initDataUnsafe === {} ? 'test' : JSON.stringify(initDataUnsafe)}
-            </p>
+            </div>
             <a
               className="App-link"
               href="https://reactjs.org"
