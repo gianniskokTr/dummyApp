@@ -495,7 +495,7 @@ function App() {
             setInitData(initData)
             setInitDataUnsafe(initDataUnsafe)
             if(initData !== 'test'){
-                setUserId(initDataUnsafe)
+                setUserId(initDataUnsafe['auth_date'])
             }
             // Example: Log initData to the console
             console.log('initData:', initData);
@@ -525,9 +525,9 @@ function App() {
             <div>
                 {initData}
             </div>
-            {/*<div>*/}
-            {/*    {userId}*/}
-            {/*</div>*/}
+            <div>
+                {userId}
+            </div>
             <div>
                 {initDataUnsafe === {} ? 'test' : JSON.stringify(initDataUnsafe)}
             </div>
