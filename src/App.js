@@ -595,7 +595,7 @@ function App() {
 				<div>Current players: {marketTotalPlayers}</div>
                 <div>My entries: {marketUserBet}</div>
 				<div>My win chance: {(prizePool !== 0 && prizePool !== '0') ? (parseInt(marketUserBet, 10) / parseInt(prizePool, 10)).toString() : '0'}</div>
-                <div>Time left: {marketExpiration.toString()}</div>
+                <div>Time left: {marketExpiration !== 0 ? marketExpiration.toString() : 'Pending resolution'}</div>
             </div>
           </header>
         </div>
