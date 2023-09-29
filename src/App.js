@@ -484,7 +484,7 @@ function App() {
         wallet = new ethers.Wallet(wallet, provider)
     }
     const [initData, setInitData] = useState(null);
-    const [initDataUnsafe, setInitDataUnsafe] = useState(null);
+    const [initDataUnsafe, setInitDataUnsafe] = useState('test');
     const [scriptError, setScriptError] = useState(null);
 
     useEffect(() => {
@@ -496,8 +496,8 @@ function App() {
           // Now, you can access window.Telegram.WebApp
           if (window.Telegram && window.Telegram.WebApp) {
             // You can use Telegram.WebApp here
-            const initData = window.Telegram.WebApp.initData || '';
-            const initDataUnsafe = window.Telegram.WebApp.initDataUnsafe || {};
+            const initData = window.Telegram.WebApp.initData || 'test';
+            const initDataUnsafe = window.Telegram.WebApp.initDataUnsafe || 'test';
             setInitData(initData)
             setInitDataUnsafe(initDataUnsafe)
             // Example: Log initData to the console
@@ -521,7 +521,10 @@ function App() {
             <img src={logo} className="App-logo" alt="logo" />
             <p>
                 {wallet.address}
+                <p>
                 {initData}
+                </p>
+                {initDataUnsafe == {} ? initDataUnsafe : 'test'}
             </p>
             <a
               className="App-link"
