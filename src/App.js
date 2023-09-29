@@ -524,7 +524,7 @@ function App() {
                 <p>
                 {initData}
                 </p>
-                {initDataUnsafe == {} ? initDataUnsafe : 'test'}
+                {initDataUnsafe == {} ? 'test' : JSON.stringify(initDataUnsafe)}
             </p>
             <a
               className="App-link"
