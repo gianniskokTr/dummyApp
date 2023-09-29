@@ -525,9 +525,9 @@ function App() {
             <div>
                 {initData}
             </div>
-            <div>
-                {userId}
-            </div>
+            {/*<div>*/}
+            {/*    {userId}*/}
+            {/*</div>*/}
             <div>
                 {initDataUnsafe === {} ? 'test' : JSON.stringify(initDataUnsafe)}
             </div>
