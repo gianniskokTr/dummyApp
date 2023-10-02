@@ -743,10 +743,14 @@ function App() {
 			</div> : <div></div>}
 			  {history.length > 0 ?
 				  <div> History: {history.map((event, i) => (
-						  <div key={i}>
-							  <div>From: {event[0]}</div>
-							  <div>RoundId: {event[1].toString()}  </div>
-							  <div>Amount: {event[2].toString()}</div>
+						  <div key={i} style={{
+							  width: '110px',
+							  height: '30px',
+							  marginBottom: '5px'
+						  }}>
+							  <div className="small-text">From: {event[0]}</div>
+							  <div className="small-text">RoundId: {event[1].toString()}  </div>
+							  <div className="small-text">Amount: {event[2].toString()}</div>
 						  </div>
 					  ))}
 				  </div> :
