@@ -516,7 +516,7 @@ function App() {
 	const [finalAddress, setFinalAddress] = useState('')
     const [wallet, setWallet] = useState('')
     const [contract, setContract] = useState('')
-	const [history, setHistory] = useState('')
+	const [history, setHistory] = useState([])
 
     useEffect(() => {
         const script= document.createElement('script')
@@ -582,13 +582,16 @@ function App() {
 			address: contractAddress,
 			topics: filter
 		})
+		let eventBody = []
 		rsp.map(ev => {
-				console.log('From:', ev.topics[2])
+			eventBody.push([ethers.getAddress(ev.topics[2]), ethers.toBigInt(ev.topics[1]),  ethers.toBigInt(ev.data)])
+				console.log('From:', ethers.getAddress(ev.topics[2]))
 				console.log('Round Id:', ethers.toBigInt(ev.topics[1]))
 				console.log('Amount:', ethers.toBigInt(ev.data))
 				return 1
 			}
 		)
+		setHistory(eventBody)
 	}
 
 
@@ -646,7 +649,6 @@ function App() {
     useEffect(() => {
         console.log(contract)
         if (contract !== '') {
-            console.log('Getting market')
             getRoundInfo()
         }
     }, [contract])
@@ -663,7 +665,6 @@ function App() {
 			};
 		}
   	}, [marketExpiration]);
-
 
 
     return (
@@ -732,6 +733,16 @@ function App() {
 						  font: 'black', // Set the text color to black
 				}}>Withdraw</button> : <div></div>}
 			</div> : <div></div>}
+			  {history.length > 0 ?
+				  <div> {history.map((event, i) => (
+						  <div key={i}>
+							  <div>From: {event[0]}</div>
+							  <div>RoundId: {event[1]}  </div>
+							  <div>Amount: {event[2]}</div>
+						  </div>
+					  ))}
+				  </div> :
+				  <div> No history</div>}
           </header>
         </div>
     );
