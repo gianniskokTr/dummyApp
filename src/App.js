@@ -744,7 +744,7 @@ function App() {
 			  {history.length > 0 ?
 				  <div> History: {history.map((event, i) => (
 						  <div key={i} style={{
-							  width: '110px',
+							  width: '300px',
 							  height: '90px',
 							  marginBottom: '5px'
 						  }}>
