@@ -713,7 +713,7 @@ function App() {
                 {wallet !== '' ? 'User address: ' + wallet.address : 'Invalid'}
             </div>
 			<div className="small-text">
-                {wallet !== '' ? 'User balance: ' + userBalance : 'Invalid'}
+                {wallet !== '' ? 'User balance: ' + ethers.formatEther(userBalance) : 'Invalid'}
             </div>
             <div className="small-text">
                 <div>Round id: {roundId}</div>
