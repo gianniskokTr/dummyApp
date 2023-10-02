@@ -590,14 +590,16 @@ function App() {
 			topics: filter
 		})
 		let eventBody = []
+		let finalBody = []
 		rsp.map(ev => {
-			eventBody.push([removeLeadingZeros(ev.topics[2]), ethers.toBigInt(ev.topics[1]),  ethers.toBigInt(ev.data)])
-				console.log('From:', removeLeadingZeros(ev.topics[2]))
-				console.log('Round Id:', ethers.toBigInt(ev.topics[1]))
-				console.log('Amount:', ethers.toBigInt(ev.data))
-				return 1
+				const eventAddress = removeLeadingZeros(ev.topics[2]).toLowerCase()
+				if ( !eventBody.includes(ethers.toBigInt(ev.topics[1]))) {
+					eventBody.push(ethers.toBigInt(ev.topics[1]))
+					return 1
+				}
 			}
 		)
+		eventBody = eventBody.slice().reverse();
 		console.log(eventBody)
 		setHistory(eventBody)
 	}
