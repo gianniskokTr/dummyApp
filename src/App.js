@@ -590,7 +590,7 @@ function App() {
 		})
 		let eventBody = []
 		rsp.map(ev => {
-			eventBody.push([ethers.getAddress(ev.topics[2]), ethers.toBigInt(ev.topics[1]),  ethers.toBigInt(ev.data)])
+			eventBody.push([removeLeadingZeros(ev.topics[2]), ethers.toBigInt(ev.topics[1]),  ethers.toBigInt(ev.data)])
 				console.log('From:', removeLeadingZeros(ev.topics[2]))
 				console.log('Round Id:', ethers.toBigInt(ev.topics[1]))
 				console.log('Amount:', ethers.toBigInt(ev.data))
