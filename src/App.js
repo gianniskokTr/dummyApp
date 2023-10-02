@@ -724,25 +724,25 @@ function App() {
 				  }}>Claim</button>
 				</div> : <div></div>}
             </div>
-			{roundId !== 0 && roundId !== '0' ? <div>
-				<input type="text" onChange={handleInputChange}  placeholder="Tickets"
-					   style={{
-						  width: '70px', // Set the width to your desired size
-						  height: '30px', // Set the height to your desired size
-						  fontSize: '14px', // Set the font size to your desired size
-						  fontWeight: 'bold', // Make the placeholder text bold
-						  font: 'black', // Set the text color to black
-						  marginRight: '5px'
-					   }}
-				/>
-				  {web3.utils.toWei((tickets * 0.001).toString(), 'ether') < userBalance ? <button onClick={enterRound} style={{
-						  width: '70px', // Set the width to your desired size
-						  height: '30px', // Set the height to your desired size
-						  fontSize: '14px', // Set the font size to your desired size
-						  fontWeight: 'bold', // Make the placeholder text bold
-						  font: 'black', // Set the text color to black
-				  }}>Enter</button> : <div> </div>}
-			</div> : <div></div>}
+			{/*{roundId !== 0 && roundId !== '0' ? <div>*/}
+			{/*	<input type="text" onChange={handleInputChange}  placeholder="Tickets"*/}
+			{/*		   style={{*/}
+			{/*			  width: '70px', // Set the width to your desired size*/}
+			{/*			  height: '30px', // Set the height to your desired size*/}
+			{/*			  fontSize: '14px', // Set the font size to your desired size*/}
+			{/*			  fontWeight: 'bold', // Make the placeholder text bold*/}
+			{/*			  font: 'black', // Set the text color to black*/}
+			{/*			  marginRight: '5px'*/}
+			{/*		   }}*/}
+			{/*	/>*/}
+			{/*	  {web3.utils.toWei((tickets * 0.001).toString(), 'ether') < userBalance ? <button onClick={enterRound} style={{*/}
+			{/*			  width: '70px', // Set the width to your desired size*/}
+			{/*			  height: '30px', // Set the height to your desired size*/}
+			{/*			  fontSize: '14px', // Set the font size to your desired size*/}
+			{/*			  fontWeight: 'bold', // Make the placeholder text bold*/}
+			{/*			  font: 'black', // Set the text color to black*/}
+			{/*	  }}>Enter</button> : <div> </div>}*/}
+			{/*</div> : <div></div>}*/}
 			{/*{userBalance != 0 ? <div>*/}
 			{/*	<input type="text" onChange={handleAddressChange}  placeholder="Withdraw address"*/}
 			{/*		   style={{*/}
