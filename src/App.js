@@ -571,7 +571,7 @@ function App() {
 		const con = contract.connect(wallet)
 		let winningRounds = await con.filterPendingWinningEntriesForUser()
 		setWinningMarkets(winningRounds)
-		getUserHistory()
+		// getUserHistory()
     }
 
 	function removeLeadingZeros(hexString) {
@@ -646,7 +646,8 @@ function App() {
 
 	async function enterRound() {
 		const con = contract.connect(wallet)
-		await con.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())})
+		const txn = await con.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())})
+		await txn.wait()
 		console.log('Pending')
 	}
 
@@ -750,6 +751,7 @@ function App() {
 						  font: 'black', // Set the text color to black
 				}}>Withdraw</button> : <div></div>}
 			</div> : <div></div>}
+			  <button onClick={getUserHistory}>Get history</button>
 			  {history.length > 0 ?
 				  <div> History: {history.map((event, i) => (
 						  <div key={i} style={{
