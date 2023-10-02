@@ -532,27 +532,27 @@ function App() {
             if(initData !== 'test'){
                 setUserId(initDataUnsafe['user']['id'])
             }
-            setUpUser()
+            // setUpUser()
           }
         };
 
     }, [userId]);
 
-    function setUpUser() {
-        if (userId !== null) {
-            let wl = localStorage.getItem(userId)
-            if (wl === null) {
-				wl = web3.eth.accounts.create()
-                // wl = ethers.Wallet.createRandom(provider)
-                localStorage.setItem(userId, wl.privateKey)
-            } else {
-                wl = web3.eth.accounts.privateKeyToAccount(localStorage.getItem(userId))
-            }
-            setWallet(web3.eth.accounts.wallet.add(wl.privateKey).get(0))
-			console.log(wallet)
-            setContract(new Contract(contractAbi,contractAddress, web3))
-        }
-    }
+    // function setUpUser() {
+    //     if (userId !== null) {
+    //         let wl = localStorage.getItem(userId)
+    //         if (wl === null) {
+	// 			wl = web3.eth.accounts.create()
+    //             // wl = ethers.Wallet.createRandom(provider)
+    //             localStorage.setItem(userId, wl.privateKey)
+    //         } else {
+    //             wl = web3.eth.accounts.privateKeyToAccount(localStorage.getItem(userId))
+    //         }
+    //         setWallet(web3.eth.accounts.wallet.add(wl.privateKey).get(0))
+	// 		console.log(wallet)
+    //         // setContract(new Contract(contractAbi,contractAddress, web3))
+    //     }
+    // }
 
 
     async function getRoundInfo() {
