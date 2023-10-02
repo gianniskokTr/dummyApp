@@ -646,21 +646,25 @@ function App() {
 
 	async function enterRound() {
 		const con = contract.connect(wallet)
+		console.log(await con.estimateGas.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())}))
 		const txn = await con.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())})
-		await txn.wait()
-		console.log('Pending')
+		const rsp = await provider.waitForTransaction(txn.hash, 1);
+		console.log(rsp)
 	}
 
 	async function claimWinnings() {
-		const con = contract.connect(wallet)
 		for (let i = 0; i<winningMarkets.length; i++) {
-			await con.claimWinnings(winningMarkets[i])
+			const con = contract.connect(wallet)
+			console.log(await con.estimateGas.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())}))
+			const txn = await con.claimWinnings(winningMarkets[i])
+			const rsp = await provider.waitForTransaction(txn.hash, 1);
+			console.log(rsp)
 		}
 	}
 
 	async function withdraw() {
 		const gas = await provider.getFeeData()
-		const amount = toBigInt(userBalance) - toBigInt(gas.gasPrice * toBigInt(2300))
+		const amount = toBigInt(userBalance) - toBigInt(gas.gasPrice * toBigInt(10000))
 		await wallet.sendTransaction({to: finalAddress, value: amount})
 	}
 
@@ -756,7 +760,7 @@ function App() {
 				  <div> History: {history.map((event, i) => (
 						  <div key={i} style={{
 							  width: '300px',
-							  height: '90px',
+							  height: '150px',
 							  marginBottom: '5px'
 						  }}>
 							  <div className="small-text">RoundId: {event[0].toString()}  </div>
