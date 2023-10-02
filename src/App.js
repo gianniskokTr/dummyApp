@@ -2,7 +2,6 @@ import logo from './logo.svg';
 import './App.css';
 import {useEffect, useState} from "react";
 import {toBigInt} from "ethers";
-import * as utils from "ethers";
 import {Contract, Web3} from 'web3'
 
 function App() {
@@ -576,39 +575,40 @@ function App() {
     }
 
 	function removeLeadingZeros(hexString) {
-	  const bigNumber = web3.utils.toBigInt(hexString, 16);
+	  const bigNumber = toBigInt(hexString, 16);
 	  const cleanedHexString = '0x' + bigNumber.toString(16);
 	  return cleanedHexString;
 	}
 
 	async function getUserHistory() {
-		let filter = [utils.id('EnteredMarket(uint256,address,uint256)')]
-		let rsp = await web3.getLogs({
-			fromBlock: 40643648,
-			toBlock: 'latest',
-			address: contractAddress,
-			topics: filter
-		})
-		let eventBody = []
-		let finalBody = []
-		rsp.map(ev => {
-			const eventAddress = removeLeadingZeros(ev.topics[2]).toLowerCase()
-			if (eventAddress === wallet.address.toLowerCase() && !eventBody.includes(web3.utils.toBigInt(ev.topics[1]))) {
-				eventBody.push(web3.utils.toBigInt(ev.topics[1]))
-				return 1
-			}
-		})
-		eventBody = eventBody.slice().reverse();
-		eventBody.map(async roundI => {
-			let currentPrizePool = await contract.methods.getRoundAmount(roundI).call()
-			let currentPlayers = await contract.methods.getRoundParticipants(roundI).call()
-			let userBet = await contract.methods.marketIdToUserToTickets(roundI, wallet.address).call()
-			let marketTickets = await contract.methods.marketIdToTotalTickets(roundI).call()
-			let winner = await contract.methods.getRoundWinner(roundI).call()
-			finalBody.push([roundI, currentPrizePool, currentPlayers.length, userBet, winner, marketTickets])
-		})
-		console.log(finalBody)
-		setHistory(finalBody)
+		console.log(1)
+		// let filter = [utils.id('EnteredMarket(uint256,address,uint256)')]
+		// let rsp = await web3.getLogs({
+		// 	fromBlock: 40643648,
+		// 	toBlock: 'latest',
+		// 	address: contractAddress,
+		// 	topics: filter
+		// })
+		// let eventBody = []
+		// let finalBody = []
+		// rsp.map(ev => {
+		// 	const eventAddress = removeLeadingZeros(ev.topics[2]).toLowerCase()
+		// 	if (eventAddress === wallet.address.toLowerCase() && !eventBody.includes(toBigInt(ev.topics[1]))) {
+		// 		eventBody.push(toBigInt(ev.topics[1]))
+		// 		return 1
+		// 	}
+		// })
+		// eventBody = eventBody.slice().reverse();
+		// eventBody.map(async roundI => {
+		// 	let currentPrizePool = await contract.methods.getRoundAmount(roundI).call()
+		// 	let currentPlayers = await contract.methods.getRoundParticipants(roundI).call()
+		// 	let userBet = await contract.methods.marketIdToUserToTickets(roundI, wallet.address).call()
+		// 	let marketTickets = await contract.methods.marketIdToTotalTickets(roundI).call()
+		// 	let winner = await contract.methods.getRoundWinner(roundI).call()
+		// 	finalBody.push([roundI, currentPrizePool, currentPlayers.length, userBet, winner, marketTickets])
+		// })
+		// console.log(finalBody)
+		// setHistory(finalBody)
 	}
 
 
@@ -648,7 +648,7 @@ function App() {
 	async function enterRound() {
 		const txn = await contract.methods.enterMarket().send({
 			from: wallet,
-			gasPrice: web3.eth.getGasPrice(),
+			gasPrice: await web3.eth.getGasPrice(),
 			value: web3.utils.toWei((tickets * 0.001).toString(), 'ether')
 		})
 		console.log(txn.transactionHash)
@@ -658,14 +658,14 @@ function App() {
 		for (let i = 0; i<winningMarkets.length; i++) {
 			const txn = await contract.methods.claimWinnings(winningMarkets[i]).send({
 				from: wallet,
-				gasPrice: web3.eth.getGasPrice()
+				gasPrice: await web3.eth.getGasPrice()
 			})
 			console.log(txn.transactionHash)
 		}
 	}
 
 	async function withdraw() {
-		const gas = web3.eth.getGasPrice()
+		const gas = await web3.eth.getGasPrice()
 		const amount = toBigInt(userBalance) - toBigInt(gas * toBigInt(60000))
 		await web3.eth.sendTransaction({
 			from: wallet.address,
