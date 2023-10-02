@@ -604,7 +604,7 @@ function App() {
 			let userBet = await contract.marketIdToUserToTickets(roundI, wallet.address)
 			let marketTickets = await contract.marketIdToTotalTickets(roundI)
 			let winner = await contract.getRoundWinner(roundI)
-			finalBody.push([roundI, currentPrizePool, currentPlayers, userBet, winner, marketTickets])
+			finalBody.push([roundI, currentPrizePool, currentPlayers.length, userBet, winner, marketTickets])
 		})
 		console.log(finalBody)
 		setHistory(finalBody)
