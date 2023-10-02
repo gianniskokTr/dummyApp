@@ -1,7 +1,9 @@
 import logo from './logo.svg';
 import './App.css';
 import {useEffect, useState} from "react";
-import {Contract, Web3} from 'web3'
+import {toBigInt} from "ethers";
+import * as utils from "ethers";
+const { ethers } = require("ethers");
 
 function App() {
     const getBotUpdates = () => fetch("https://api.telegram.org/bot6053496110:AAEuLqx3o4D9JIBmm9de5_2GmvbIl5YCIUg/getUpdates").then((response) => console.log(response.json()))
@@ -498,8 +500,7 @@ function App() {
 	}
 ]
     const contractAddress = '0xFF0F3F15Bee641257C63317a81Bfa8C6ead2588b'
-    // const provider = ethers.getDefaultProvider('https://rpc.ankr.com/polygon_mumbai')
-	const web3 = new Web3('https://polygon-mumbai.g.alchemy.com/v2/l8YnVfVn-vf8ZmKDTDHm1Qqa87WTDnOv')
+    const provider = ethers.getDefaultProvider('https://rpc.ankr.com/polygon_mumbai')
     const [initDataSt, setInitData] = useState(null);
     const [initDataUnsafeSt, setInitDataUnsafe] = useState('test');
     const [userId, setUserId] = useState(null)
@@ -521,6 +522,7 @@ function App() {
         const script= document.createElement('script')
         script.src = "https://telegram.org/js/telegram-web-app.js?1"
         document.head.appendChild(script)
+
         script.onload = () => {
           // Now, you can access window.Telegram.WebApp
           if (window.Telegram && window.Telegram.WebApp) {
@@ -532,92 +534,85 @@ function App() {
             if(initData !== 'test'){
                 setUserId(initDataUnsafe['user']['id'])
             }
-            // setUpUser()
+            setUpUser()
           }
         };
 
     }, [userId]);
 
-    // function setUpUser() {
-    //     if (userId !== null) {
-    //         let wl = localStorage.getItem(userId)
-    //         if (wl === null) {
-	// 			wl = web3.eth.accounts.create()
-    //             // wl = ethers.Wallet.createRandom(provider)
-    //             localStorage.setItem(userId, wl.privateKey)
-    //         } else {
-    //             wl = web3.eth.accounts.privateKeyToAccount(localStorage.getItem(userId))
-    //         }
-    //         setWallet(web3.eth.accounts.wallet.add(wl.privateKey).get(0))
-	// 		console.log(wallet)
-    //         // setContract(new Contract(contractAbi,contractAddress, web3))
-    //     }
-    // }
+    function setUpUser() {
+        if (userId !== null) {
+            let wl = localStorage.getItem(userId)
+            if (wl === null) {
+                wl = ethers.Wallet.createRandom(provider)
+                localStorage.setItem(userId, wl.signingKey.privateKey)
+            } else {
+                wl = new ethers.Wallet(wl, provider)
+            }
+            setWallet(wl)
+            setContract(new ethers.Contract(contractAddress, contractAbi, wl.provider))
+        }
+    }
 
 
     async function getRoundInfo() {
-		console.log(1)
-        // let roundId = await contract.methods.marketId().call()
-		// // roundId = web3.utils.toNumber(roundId)
-        // setRoundId(roundId.toString());
-        // let currentPrizePool = await contract.methods.getRoundAmount(roundId).call()
-        // setPrizePool(currentPrizePool.toString())
-        // let currentPlayers = await contract.methods.getRoundParticipants(roundId).call()
-        // setTotalPlayers(currentPlayers.length)
-		// let userBet = await contract.methods.marketIdToUserToTickets(roundId, wallet.address).call()
-        // setUserBet(userBet.toString())
-		// let expiration = await contract.methods.marketIdToExpiration(roundId).call()
-        // setExpiration(expiration - web3.utils.toBigInt(Date.now() / 1000))
-		// let marketTickets = await contract.methods.marketIdToTotalTickets(roundId).call()
-		// setMarketToTalTickets(marketTickets.toString())
-		// let winningRounds = await contract.methods.filterPendingWinningEntriesForUser().call({from: wallet.address})
-		// setWinningMarkets(winningRounds.toString())
+        let roundId = await contract.marketId()
+        setRoundId(roundId.toString());
+        let currentPrizePool = await contract.getRoundAmount(roundId)
+        setPrizePool(currentPrizePool.toString())
+        let currentPlayers = await contract.getRoundParticipants(roundId)
+        setTotalPlayers(currentPlayers.length)
+		let userBet = await contract.marketIdToUserToTickets(roundId, wallet.address)
+        setUserBet(userBet.toString())
+		let expiration = await contract.marketIdToExpiration(roundId)
+        setExpiration(parseInt(expiration, 10) - parseInt((Date.now() / 1000)))
+		let marketTickets = await contract.marketIdToTotalTickets(roundId)
+		setMarketToTalTickets(marketTickets)
+		const con = contract.connect(wallet)
+		let winningRounds = await con.filterPendingWinningEntriesForUser()
+		setWinningMarkets(winningRounds)
 		// getUserHistory()
     }
 
 	function removeLeadingZeros(hexString) {
-		console.log(1)
-	  // const bigNumber = toBigInt(hexString, 16);
-	  // const cleanedHexString = '0x' + bigNumber.toString(16);
-	  // return cleanedHexString;
+	  const bigNumber = ethers.toBigInt(hexString, 16);
+	  const cleanedHexString = '0x' + bigNumber.toString(16);
+	  return cleanedHexString;
 	}
 
 	async function getUserHistory() {
-		console.log(1)
-		// let filter = [utils.id('EnteredMarket(uint256,address,uint256)')]
-		// let rsp = await web3.getLogs({
-		// 	fromBlock: 40643648,
-		// 	toBlock: 'latest',
-		// 	address: contractAddress,
-		// 	topics: filter
-		// })
-		// let eventBody = []
-		// let finalBody = []
-		// rsp.map(ev => {
-		// 	const eventAddress = removeLeadingZeros(ev.topics[2]).toLowerCase()
-		// 	if (eventAddress === wallet.address.toLowerCase() && !eventBody.includes(toBigInt(ev.topics[1]))) {
-		// 		eventBody.push(toBigInt(ev.topics[1]))
-		// 		return 1
-		// 	}
-		// })
-		// eventBody = eventBody.slice().reverse();
-		// eventBody.map(async roundI => {
-		// 	let currentPrizePool = await contract.methods.getRoundAmount(roundI).call()
-		// 	let currentPlayers = await contract.methods.getRoundParticipants(roundI).call()
-		// 	let userBet = await contract.methods.marketIdToUserToTickets(roundI, wallet.address).call()
-		// 	let marketTickets = await contract.methods.marketIdToTotalTickets(roundI).call()
-		// 	let winner = await contract.methods.getRoundWinner(roundI).call()
-		// 	finalBody.push([roundI, currentPrizePool, currentPlayers.length, userBet, winner, marketTickets])
-		// })
-		// console.log(finalBody)
-		// setHistory(finalBody)
+		let filter = [utils.id('EnteredMarket(uint256,address,uint256)')]
+		let rsp = await provider.getLogs({
+			fromBlock: 40643648,
+			toBlock: 'latest',
+			address: contractAddress,
+			topics: filter
+		})
+		let eventBody = []
+		let finalBody = []
+		rsp.map(ev => {
+			const eventAddress = removeLeadingZeros(ev.topics[2]).toLowerCase()
+			if (eventAddress === wallet.address.toLowerCase() && !eventBody.includes(ethers.toBigInt(ev.topics[1]))) {
+				eventBody.push(ethers.toBigInt(ev.topics[1]))
+				return 1
+			}
+		})
+		eventBody = eventBody.slice().reverse();
+		eventBody.map(async roundI => {
+			let currentPrizePool = await contract.getRoundAmount(roundI)
+			let currentPlayers = await contract.getRoundParticipants(roundI)
+			let userBet = await contract.marketIdToUserToTickets(roundI, wallet.address)
+			let marketTickets = await contract.marketIdToTotalTickets(roundI)
+			let winner = await contract.getRoundWinner(roundI)
+			finalBody.push([roundI, currentPrizePool, currentPlayers.length, userBet, winner, marketTickets])
+		})
+		console.log(finalBody)
+		setHistory(finalBody)
 	}
 
 
 	async function getBalance(){
-		const bal = await web3.eth.getBalance(wallet.address)
-		console.log(bal)
-		setUserBalance(0)
+		setUserBalance(await provider.getBalance(wallet.address))
 	}
 	const handleInputChange = (e) => {
 		const inputValue = e.target.value;
@@ -629,7 +624,7 @@ function App() {
 	const handleAddressChange = (e) => {
 		const inputValue = e.target.value;
 		try {
-			setFinalAddress(web3.utils.toChecksumAddress(inputValue))
+			setFinalAddress(ethers.getAddress(inputValue))
 		} catch(error) {
 			setFinalAddress('INVALID')
 		}
@@ -649,34 +644,27 @@ function App() {
 		}
   	};
 
-	// async function enterRound() {
-	// 	const txn = await contract.methods.enterMarket().send({
-	// 		from: wallet,
-	// 		gasPrice: await web3.eth.getGasPrice(),
-	// 		value: web3.utils.toWei((tickets * 0.001).toString(), 'ether')
-	// 	})
-	// 	console.log(txn.transactionHash)
-	// }
+	async function enterRound() {
+		const con = contract.connect(wallet)
+		const txn = await con.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())})
+		const rsp = await provider.waitForTransaction(txn.hash, 1);
+		console.log(rsp)
+	}
 
-	// async function claimWinnings() {
-	// 	for (let i = 0; i<winningMarkets.length; i++) {
-	// 		const txn = await contract.methods.claimWinnings(winningMarkets[i]).send({
-	// 			from: wallet,
-	// 			gasPrice: await web3.eth.getGasPrice()
-	// 		})
-	// 		console.log(txn.transactionHash)
-	// 	}
-	// }
+	async function claimWinnings() {
+		for (let i = 0; i<winningMarkets.length; i++) {
+			const con = contract.connect(wallet)
+			const txn = await con.claimWinnings(winningMarkets[i])
+			const rsp = await provider.waitForTransaction(txn.hash, 1);
+			console.log(rsp)
+		}
+	}
 
-	// async function withdraw() {
-	// 	const gas = await web3.eth.getGasPrice()
-	// 	const amount = userBalance - (gas * web3.utils.toBigInt(60000))
-	// 	await web3.eth.sendTransaction({
-	// 		from: wallet.address,
-	// 		to: finalAddress,
-	// 		value: amount,
-	// 		gas: '60000'})
-	// }
+	async function withdraw() {
+		const gas = await provider.getFeeData()
+		const amount = toBigInt(userBalance) - toBigInt(gas.gasPrice * toBigInt(60000))
+		await wallet.sendTransaction({to: finalAddress, value: amount})
+	}
 
     useEffect(() => {
         console.log(contract)
@@ -685,18 +673,18 @@ function App() {
         }
     }, [contract])
 
-	// useEffect(() => {
-	// 	if (marketExpiration > 0) {
-	// 		getBalance()
-	// 		const intervalID = setInterval(() => {
-	// 			setExpiration((preExpiration) => preExpiration - 1);
-	// 		}, 1000); // Update the timer every 1000 milliseconds (1 second)
-	// 		// Cleanup: Clear the interval when the component unmounts
-	// 		return () => {
-	// 			clearInterval(intervalID);
-	// 		};
-	// 	}
-  	// }, [marketExpiration]);
+	useEffect(() => {
+		if (marketExpiration > 0) {
+			getBalance()
+			const intervalID = setInterval(() => {
+				setExpiration((preExpiration) => preExpiration - 1);
+			}, 1000); // Update the timer every 1000 milliseconds (1 second)
+			// Cleanup: Clear the interval when the component unmounts
+			return () => {
+				clearInterval(intervalID);
+			};
+		}
+  	}, [marketExpiration]);
 
 
     return (
@@ -705,85 +693,85 @@ function App() {
             <div className="small-text" onClick={copyToClipboard}>
                 {wallet !== '' ? 'User address: ' + wallet.address : 'Invalid'}
             </div>
-			{/*<div className="small-text">*/}
-            {/*    {wallet !== '' ? 'User balance: ' + userBalance : 'Invalid'}*/}
-            {/*</div>*/}
-            {/*<div className="small-text">*/}
-            {/*    <div>Round id: {roundId}</div>*/}
-            {/*    <div>Prize pool: {prizePool}</div>*/}
-			{/*	<div>Current players: {marketTotalPlayers}</div>*/}
-            {/*    <div>My entries: {marketUserBet}</div>*/}
-			{/*	/!*<div>My win chance: {(prizePool !== 0 && prizePool !== '0') ? (parseInt(marketUserBet, 10) / parseInt(marketToTalTickets, 10)).toString() : '0'}</div>*!/*/}
-            {/*    /!*<div>Time left: {marketExpiration > 0 ? marketExpiration.toString() : 'Pending resolution'}</div>*!/*/}
-			{/*	<div>Ticket Price: 0.001 Ether</div>*/}
-			{/*	/!*{winningMarkets.length > 0 ? <div>*!/*/}
-			{/*	/!*	<div>Pending Winning Round Ids: {winningMarkets.toString()}</div>*!/*/}
-			{/*	/!*	<button onClick={claimWinnings} style={{*!/*/}
-			{/*	/!*		  width: '70px', // Set the width to your desired size*!/*/}
-			{/*	/!*		  height: '30px', // Set the height to your desired size*!/*/}
-			{/*	/!*		  fontSize: '14px', // Set the font size to your desired size*!/*/}
-			{/*	/!*		  fontWeight: 'bold', // Make the placeholder text bold*!/*/}
-			{/*	/!*		  font: 'black', // Set the text color to black*!/*/}
-			{/*	/!*  }}>Claim</button>*!/*/}
-			{/*	/!*</div> : <div></div>}*!/*/}
-            {/*</div>*/}
-			{/*{roundId !== 0 && roundId !== '0' ? <div>*/}
-			{/*	<input type="text" onChange={handleInputChange}  placeholder="Tickets"*/}
-			{/*		   style={{*/}
-			{/*			  width: '70px', // Set the width to your desired size*/}
-			{/*			  height: '30px', // Set the height to your desired size*/}
-			{/*			  fontSize: '14px', // Set the font size to your desired size*/}
-			{/*			  fontWeight: 'bold', // Make the placeholder text bold*/}
-			{/*			  font: 'black', // Set the text color to black*/}
-			{/*			  marginRight: '5px'*/}
-			{/*		   }}*/}
-			{/*	/>*/}
-			{/*	  {web3.utils.toWei((tickets * 0.001).toString(), 'ether') < userBalance ? <button onClick={enterRound} style={{*/}
-			{/*			  width: '70px', // Set the width to your desired size*/}
-			{/*			  height: '30px', // Set the height to your desired size*/}
-			{/*			  fontSize: '14px', // Set the font size to your desired size*/}
-			{/*			  fontWeight: 'bold', // Make the placeholder text bold*/}
-			{/*			  font: 'black', // Set the text color to black*/}
-			{/*	  }}>Enter</button> : <div> </div>}*/}
-			{/*</div> : <div></div>}*/}
-			{/*{userBalance != 0 ? <div>*/}
-			{/*	<input type="text" onChange={handleAddressChange}  placeholder="Withdraw address"*/}
-			{/*		   style={{*/}
-			{/*			  width: '140px', // Set the width to your desired size*/}
-			{/*			  height: '30px', // Set the height to your desired size*/}
-			{/*			  fontSize: '14px', // Set the font size to your desired size*/}
-			{/*			  fontWeight: 'bold', // Make the placeholder text bold*/}
-			{/*			  font: 'black', // Set the text color to black*/}
-			{/*			  marginRight: '5px'*/}
-			{/*		   }}*/}
-			{/*	/>*/}
-			{/*	{finalAddress !== 'INVALID' ? <button onClick={withdraw} style={{*/}
-			{/*			  width: '70px', // Set the width to your desired size*/}
-			{/*			  height: '30px', // Set the height to your desired size*/}
-			{/*			  fontSize: '14px', // Set the font size to your desired size*/}
-			{/*			  fontWeight: 'bold', // Make the placeholder text bold*/}
-			{/*			  font: 'black', // Set the text color to black*/}
-			{/*	}}>Withdraw</button> : <div></div>}*/}
-			{/*</div> : <div></div>}*/}
-			{/*  <button onClick={getUserHistory}>Get history</button>*/}
-			{/*  {history.length > 0 ?*/}
-			{/*	  <div> History: {history.map((event, i) => (*/}
-			{/*			  <div key={i} style={{*/}
-			{/*				  width: '300px',*/}
-			{/*				  height: '150px',*/}
-			{/*				  marginBottom: '5px'*/}
-			{/*			  }}>*/}
-			{/*				  <div className="small-text">RoundId: {event[0].toString()}  </div>*/}
-			{/*				  <div className="small-text">PrizePool: {event[1].toString()}  </div>*/}
-			{/*				  <div className="small-text">Total participants: {event[2].toString()}  </div>*/}
-			{/*				  <div className="small-text">Your tickets: {event[3].toString()}</div>*/}
-			{/*				  <div className="small-text">Winner: <div>{event[4].toString()}</div></div>*/}
-			{/*				  <div className="small-text">Total tickets: {event[5].toString()}</div>*/}
+			<div className="small-text">
+                {wallet !== '' ? 'User balance: ' + userBalance : 'Invalid'}
+            </div>
+            <div className="small-text">
+                <div>Round id: {roundId}</div>
+                <div>Prize pool: {prizePool}</div>
+				<div>Current players: {marketTotalPlayers}</div>
+                <div>My entries: {marketUserBet}</div>
+				<div>My win chance: {(prizePool !== 0 && prizePool !== '0') ? (parseInt(marketUserBet, 10) / parseInt(marketToTalTickets, 10)).toString() : '0'}</div>
+                <div>Time left: {marketExpiration > 0 ? marketExpiration.toString() : 'Pending resolution'}</div>
+				<div>Ticket Price: 0.001 Ether</div>
+				{winningMarkets.length > 0 ? <div>
+					<div>Pending Winning Round Ids: {winningMarkets.toString()}</div>
+					<button onClick={claimWinnings} style={{
+						  width: '70px', // Set the width to your desired size
+						  height: '30px', // Set the height to your desired size
+						  fontSize: '14px', // Set the font size to your desired size
+						  fontWeight: 'bold', // Make the placeholder text bold
+						  font: 'black', // Set the text color to black
+				  }}>Claim</button>
+				</div> : <div></div>}
+            </div>
+			{roundId !== 0 && roundId !== '0' ? <div>
+				<input type="text" onChange={handleInputChange}  placeholder="Tickets"
+					   style={{
+						  width: '70px', // Set the width to your desired size
+						  height: '30px', // Set the height to your desired size
+						  fontSize: '14px', // Set the font size to your desired size
+						  fontWeight: 'bold', // Make the placeholder text bold
+						  font: 'black', // Set the text color to black
+						  marginRight: '5px'
+					   }}
+				/>
+				  {ethers.parseEther((tickets * 0.001).toString()) < userBalance ? <button onClick={enterRound} style={{
+						  width: '70px', // Set the width to your desired size
+						  height: '30px', // Set the height to your desired size
+						  fontSize: '14px', // Set the font size to your desired size
+						  fontWeight: 'bold', // Make the placeholder text bold
+						  font: 'black', // Set the text color to black
+				  }}>Enter</button> : <div> </div>}
+			</div> : <div></div>}
+			{userBalance != 0 ? <div>
+				<input type="text" onChange={handleAddressChange}  placeholder="Withdraw address"
+					   style={{
+						  width: '140px', // Set the width to your desired size
+						  height: '30px', // Set the height to your desired size
+						  fontSize: '14px', // Set the font size to your desired size
+						  fontWeight: 'bold', // Make the placeholder text bold
+						  font: 'black', // Set the text color to black
+						  marginRight: '5px'
+					   }}
+				/>
+				{finalAddress !== 'INVALID' ? <button onClick={withdraw} style={{
+						  width: '70px', // Set the width to your desired size
+						  height: '30px', // Set the height to your desired size
+						  fontSize: '14px', // Set the font size to your desired size
+						  fontWeight: 'bold', // Make the placeholder text bold
+						  font: 'black', // Set the text color to black
+				}}>Withdraw</button> : <div></div>}
+			</div> : <div></div>}
+			  <button onClick={getUserHistory}>Get history</button>
+			  {history.length > 0 ?
+				  <div> History: {history.map((event, i) => (
+						  <div key={i} style={{
+							  width: '300px',
+							  height: '150px',
+							  marginBottom: '5px'
+						  }}>
+							  <div className="small-text">RoundId: {event[0].toString()}  </div>
+							  <div className="small-text">PrizePool: {event[1].toString()}  </div>
+							  <div className="small-text">Total participants: {event[2].toString()}  </div>
+							  <div className="small-text">Your tickets: {event[3].toString()}</div>
+							  <div className="small-text">Winner: <div>{event[4].toString()}</div></div>
+							  <div className="small-text">Total tickets: {event[5].toString()}</div>
 
-			{/*			  </div>*/}
-			{/*		  ))}*/}
-			{/*	  </div> :*/}
-			{/*	  <div> No history</div>}*/}
+						  </div>
+					  ))}
+				  </div> :
+				  <div> No history</div>}
           </header>
         </div>
     );
