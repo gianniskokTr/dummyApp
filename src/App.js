@@ -521,7 +521,6 @@ function App() {
         const script= document.createElement('script')
         script.src = "https://telegram.org/js/telegram-web-app.js?1"
         document.head.appendChild(script)
-
         script.onload = () => {
           // Now, you can access window.Telegram.WebApp
           if (window.Telegram && window.Telegram.WebApp) {
@@ -550,27 +549,29 @@ function App() {
                 wl = web3.eth.accounts.privateKeyToAccount(localStorage.getItem(userId))
             }
             setWallet(web3.eth.accounts.wallet.add(wl.privateKey).get(0))
+			console.log(wallet)
             setContract(new Contract(contractAbi,contractAddress, web3))
         }
     }
 
 
     async function getRoundInfo() {
-        let roundId = await contract.methods.marketId().call()
-		// roundId = web3.utils.toNumber(roundId)
-        setRoundId(roundId.toString());
-        let currentPrizePool = await contract.methods.getRoundAmount(roundId).call()
-        setPrizePool(currentPrizePool.toString())
-        let currentPlayers = await contract.methods.getRoundParticipants(roundId).call()
-        setTotalPlayers(currentPlayers.length)
-		let userBet = await contract.methods.marketIdToUserToTickets(roundId, wallet.address).call()
-        setUserBet(userBet.toString())
-		let expiration = await contract.methods.marketIdToExpiration(roundId).call()
-        setExpiration(expiration - web3.utils.toBigInt(Date.now() / 1000))
-		let marketTickets = await contract.methods.marketIdToTotalTickets(roundId).call()
-		setMarketToTalTickets(marketTickets.toString())
-		let winningRounds = await contract.methods.filterPendingWinningEntriesForUser().call({from: wallet.address})
-		setWinningMarkets(winningRounds.toString())
+		console.log(1)
+        // let roundId = await contract.methods.marketId().call()
+		// // roundId = web3.utils.toNumber(roundId)
+        // setRoundId(roundId.toString());
+        // let currentPrizePool = await contract.methods.getRoundAmount(roundId).call()
+        // setPrizePool(currentPrizePool.toString())
+        // let currentPlayers = await contract.methods.getRoundParticipants(roundId).call()
+        // setTotalPlayers(currentPlayers.length)
+		// let userBet = await contract.methods.marketIdToUserToTickets(roundId, wallet.address).call()
+        // setUserBet(userBet.toString())
+		// let expiration = await contract.methods.marketIdToExpiration(roundId).call()
+        // setExpiration(expiration - web3.utils.toBigInt(Date.now() / 1000))
+		// let marketTickets = await contract.methods.marketIdToTotalTickets(roundId).call()
+		// setMarketToTalTickets(marketTickets.toString())
+		// let winningRounds = await contract.methods.filterPendingWinningEntriesForUser().call({from: wallet.address})
+		// setWinningMarkets(winningRounds.toString())
 		// getUserHistory()
     }
 
@@ -616,7 +617,7 @@ function App() {
 	async function getBalance(){
 		const bal = await web3.eth.getBalance(wallet.address)
 		console.log(bal)
-		setUserBalance(bal)
+		setUserBalance(0)
 	}
 	const handleInputChange = (e) => {
 		const inputValue = e.target.value;
