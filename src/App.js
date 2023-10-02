@@ -709,8 +709,8 @@ function App() {
                 <div>Prize pool: {prizePool}</div>
 				<div>Current players: {marketTotalPlayers}</div>
                 <div>My entries: {marketUserBet}</div>
-				<div>My win chance: {(prizePool !== 0 && prizePool !== '0') ? (parseInt(marketUserBet, 10) / parseInt(marketToTalTickets, 10)).toString() : '0'}</div>
-                <div>Time left: {marketExpiration > 0 ? marketExpiration.toString() : 'Pending resolution'}</div>
+				{/*<div>My win chance: {(prizePool !== 0 && prizePool !== '0') ? (parseInt(marketUserBet, 10) / parseInt(marketToTalTickets, 10)).toString() : '0'}</div>*/}
+                {/*<div>Time left: {marketExpiration > 0 ? marketExpiration.toString() : 'Pending resolution'}</div>*/}
 				<div>Ticket Price: 0.001 Ether</div>
 				{winningMarkets.length > 0 ? <div>
 					<div>Pending Winning Round Ids: {winningMarkets.toString()}</div>
