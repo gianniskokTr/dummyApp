@@ -742,7 +742,7 @@ function App() {
 				}}>Withdraw</button> : <div></div>}
 			</div> : <div></div>}
 			  {history.length > 0 ?
-				  <div> {history.map((event, i) => (
+				  <div> History: {history.map((event, i) => (
 						  <div key={i}>
 							  <div>From: {event[0]}</div>
 							  <div>RoundId: {event[1]}  </div>
