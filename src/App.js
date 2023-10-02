@@ -649,34 +649,34 @@ function App() {
 		}
   	};
 
-	async function enterRound() {
-		const txn = await contract.methods.enterMarket().send({
-			from: wallet,
-			gasPrice: await web3.eth.getGasPrice(),
-			value: web3.utils.toWei((tickets * 0.001).toString(), 'ether')
-		})
-		console.log(txn.transactionHash)
-	}
+	// async function enterRound() {
+	// 	const txn = await contract.methods.enterMarket().send({
+	// 		from: wallet,
+	// 		gasPrice: await web3.eth.getGasPrice(),
+	// 		value: web3.utils.toWei((tickets * 0.001).toString(), 'ether')
+	// 	})
+	// 	console.log(txn.transactionHash)
+	// }
 
-	async function claimWinnings() {
-		for (let i = 0; i<winningMarkets.length; i++) {
-			const txn = await contract.methods.claimWinnings(winningMarkets[i]).send({
-				from: wallet,
-				gasPrice: await web3.eth.getGasPrice()
-			})
-			console.log(txn.transactionHash)
-		}
-	}
+	// async function claimWinnings() {
+	// 	for (let i = 0; i<winningMarkets.length; i++) {
+	// 		const txn = await contract.methods.claimWinnings(winningMarkets[i]).send({
+	// 			from: wallet,
+	// 			gasPrice: await web3.eth.getGasPrice()
+	// 		})
+	// 		console.log(txn.transactionHash)
+	// 	}
+	// }
 
-	async function withdraw() {
-		const gas = await web3.eth.getGasPrice()
-		const amount = userBalance - (gas * web3.utils.toBigInt(60000))
-		await web3.eth.sendTransaction({
-			from: wallet.address,
-			to: finalAddress,
-			value: amount,
-			gas: '60000'})
-	}
+	// async function withdraw() {
+	// 	const gas = await web3.eth.getGasPrice()
+	// 	const amount = userBalance - (gas * web3.utils.toBigInt(60000))
+	// 	await web3.eth.sendTransaction({
+	// 		from: wallet.address,
+	// 		to: finalAddress,
+	// 		value: amount,
+	// 		gas: '60000'})
+	// }
 
     useEffect(() => {
         console.log(contract)
@@ -685,18 +685,18 @@ function App() {
         }
     }, [contract])
 
-	useEffect(() => {
-		if (marketExpiration > 0) {
-			getBalance()
-			const intervalID = setInterval(() => {
-				setExpiration((preExpiration) => preExpiration - 1);
-			}, 1000); // Update the timer every 1000 milliseconds (1 second)
-			// Cleanup: Clear the interval when the component unmounts
-			return () => {
-				clearInterval(intervalID);
-			};
-		}
-  	}, [marketExpiration]);
+	// useEffect(() => {
+	// 	if (marketExpiration > 0) {
+	// 		getBalance()
+	// 		const intervalID = setInterval(() => {
+	// 			setExpiration((preExpiration) => preExpiration - 1);
+	// 		}, 1000); // Update the timer every 1000 milliseconds (1 second)
+	// 		// Cleanup: Clear the interval when the component unmounts
+	// 		return () => {
+	// 			clearInterval(intervalID);
+	// 		};
+	// 	}
+  	// }, [marketExpiration]);
 
 
     return (
