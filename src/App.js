@@ -614,7 +614,9 @@ function App() {
 
 
 	async function getBalance(){
-		setUserBalance(await web3.eth.getBalance(wallet.address))
+		const bal = await web3.eth.getBalance(wallet.address)
+		console.log(bal)
+		setUserBalance(bal)
 	}
 	const handleInputChange = (e) => {
 		const inputValue = e.target.value;
