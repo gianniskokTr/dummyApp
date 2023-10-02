@@ -575,7 +575,7 @@ function App() {
     }
 
 	function removeLeadingZeros(hexString) {
-	  const bigNumber = new ethers.toBigInt(hexString, 16);
+	  const bigNumber = ethers.toBigInt(hexString, 16);
 	  const cleanedHexString = '0x' + bigNumber.toString(16);
 	  console.log(cleanedHexString)
 	  return cleanedHexString;
