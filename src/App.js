@@ -745,8 +745,8 @@ function App() {
 				  <div> History: {history.map((event, i) => (
 						  <div key={i}>
 							  <div>From: {event[0]}</div>
-							  <div>RoundId: {event[1]}  </div>
-							  <div>Amount: {event[2]}</div>
+							  <div>RoundId: {event[1].toString()}  </div>
+							  <div>Amount: {event[2].toString()}</div>
 						  </div>
 					  ))}
 				  </div> :
