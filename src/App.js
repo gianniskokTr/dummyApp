@@ -516,6 +516,7 @@ function App() {
 	const [finalAddress, setFinalAddress] = useState('')
     const [wallet, setWallet] = useState('')
     const [contract, setContract] = useState('')
+	const [history, setHistory] = useState('')
 
     useEffect(() => {
         const script= document.createElement('script')
@@ -581,8 +582,14 @@ function App() {
 			address: contractAddress,
 			topics: filter
 		})
-		console.log(rsp)
-    }
+		rsp.map(ev => {
+				console.log('From:', ev.topics[2])
+				console.log('Round Id:', ethers.toBigInt(ev.topics[1]))
+				console.log('Amount:', ethers.toBigInt(ev.data))
+				return 1
+			}
+		)
+	}
 
 
 	async function getBalance(){
