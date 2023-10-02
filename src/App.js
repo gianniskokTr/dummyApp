@@ -574,6 +574,12 @@ function App() {
 		getUserHistory()
     }
 
+	function removeLeadingZeros(hexString) {
+	  const bigNumber = new ethers.toBigInt(hexString, 16);
+	  const cleanedHexString = '0x' + bigNumber.toString(16);
+	  return cleanedHexString;
+	}
+
 	async function getUserHistory() {
 		let filter = [utils.id('EnteredMarket(uint256,address,uint256)')]
 		let rsp = await provider.getLogs({
@@ -585,7 +591,7 @@ function App() {
 		let eventBody = []
 		rsp.map(ev => {
 			eventBody.push([ethers.getAddress(ev.topics[2]), ethers.toBigInt(ev.topics[1]),  ethers.toBigInt(ev.data)])
-				console.log('From:', ethers.getAddress(ev.topics[2]))
+				console.log('From:', removeLeadingZeros(ev.topics[2]))
 				console.log('Round Id:', ethers.toBigInt(ev.topics[1]))
 				console.log('Amount:', ethers.toBigInt(ev.data))
 				return 1
