@@ -745,7 +745,7 @@ function App() {
 				  <div> History: {history.map((event, i) => (
 						  <div key={i} style={{
 							  width: '110px',
-							  height: '30px',
+							  height: '90px',
 							  marginBottom: '5px'
 						  }}>
 							  <div className="small-text">From: {event[0]}</div>
