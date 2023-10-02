@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import {useEffect, useState} from "react";
 import {toBigInt} from "ethers";
+import * as utils from "ethers";
 const { ethers } = require("ethers");
 
 function App() {
@@ -573,8 +574,13 @@ function App() {
     }
 
 	async function getUserHistory() {
-		let ev = contract.filters.EnteredMarket()
-		let rsp = await contract.querryFilter(ev)
+		let filter = [utils.id('EnteredMarket(uint256,address,uint256)')]
+		let rsp = await provider.getLogs({
+			fromBlock: 40643648,
+			toBlock: 'latest',
+			address: contractAddress,
+			topics: filter
+		})
 		console.log(rsp)
     }
 
