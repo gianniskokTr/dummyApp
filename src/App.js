@@ -1,7 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
 import {useEffect, useState} from "react";
-import {toBigInt} from "ethers";
 import {Contract, Web3} from 'web3'
 
 function App() {
@@ -575,9 +574,10 @@ function App() {
     }
 
 	function removeLeadingZeros(hexString) {
-	  const bigNumber = toBigInt(hexString, 16);
-	  const cleanedHexString = '0x' + bigNumber.toString(16);
-	  return cleanedHexString;
+		console.log(1)
+	  // const bigNumber = toBigInt(hexString, 16);
+	  // const cleanedHexString = '0x' + bigNumber.toString(16);
+	  // return cleanedHexString;
 	}
 
 	async function getUserHistory() {
@@ -666,7 +666,7 @@ function App() {
 
 	async function withdraw() {
 		const gas = await web3.eth.getGasPrice()
-		const amount = toBigInt(userBalance) - toBigInt(gas * toBigInt(60000))
+		const amount = userBalance - (gas * web3.utils.toBigInt(60000))
 		await web3.eth.sendTransaction({
 			from: wallet.address,
 			to: finalAddress,
