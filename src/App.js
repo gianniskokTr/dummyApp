@@ -577,7 +577,6 @@ function App() {
 	function removeLeadingZeros(hexString) {
 	  const bigNumber = ethers.toBigInt(hexString, 16);
 	  const cleanedHexString = '0x' + bigNumber.toString(16);
-	  console.log(cleanedHexString)
 	  return cleanedHexString;
 	}
 
@@ -648,6 +647,7 @@ function App() {
 	async function enterRound() {
 		const con = contract.connect(wallet)
 		await con.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())})
+		console.log('Pending')
 	}
 
 	async function claimWinnings() {
