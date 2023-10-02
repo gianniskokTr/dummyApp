@@ -592,16 +592,23 @@ function App() {
 		let eventBody = []
 		let finalBody = []
 		rsp.map(ev => {
-				const eventAddress = removeLeadingZeros(ev.topics[2]).toLowerCase()
-				if ( !eventBody.includes(ethers.toBigInt(ev.topics[1]))) {
-					eventBody.push(ethers.toBigInt(ev.topics[1]))
-					return 1
-				}
+			const eventAddress = removeLeadingZeros(ev.topics[2]).toLowerCase()
+			if (eventAddress === wallet.address.toLowerCase() && !eventBody.includes(ethers.toBigInt(ev.topics[1]))) {
+				eventBody.push(ethers.toBigInt(ev.topics[1]))
+				return 1
 			}
-		)
+		})
 		eventBody = eventBody.slice().reverse();
-		console.log(eventBody)
-		setHistory(eventBody)
+		eventBody.map(async roundI => {
+			let currentPrizePool = await contract.getRoundAmount(roundI)
+			let currentPlayers = await contract.getRoundParticipants(roundI)
+			let userBet = await contract.marketIdToUserToTickets(roundI, wallet.address)
+			let marketTickets = await contract.marketIdToTotalTickets(roundI)
+			let winner = await contract.getRoundWinner(roundI)
+			finalBody.push([roundI, currentPrizePool, currentPlayers, userBet, winner, marketTickets])
+		})
+		console.log(finalBody)
+		setHistory(finalBody)
 	}
 
 
@@ -750,9 +757,13 @@ function App() {
 							  height: '90px',
 							  marginBottom: '5px'
 						  }}>
-							  <div className="small-text">From: <div>{event[0]}</div></div>
-							  <div className="small-text">RoundId: {event[1].toString()}  </div>
-							  <div className="small-text">Amount: {event[2].toString()}</div>
+							  <div className="small-text">RoundId: {event[0].toString()}  </div>
+							  <div className="small-text">PrizePool: {event[1].toString()}  </div>
+							  <div className="small-text">Total participants: {event[2].toString()}  </div>
+							  <div className="small-text">Your tickets: {event[3].toString()}</div>
+							  <div className="small-text">Winner: <div>{event[4].toString()}</div></div>
+							  <div className="small-text">Total tickets: {event[5].toString()}</div>
+
 						  </div>
 					  ))}
 				  </div> :
