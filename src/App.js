@@ -557,6 +557,7 @@ function App() {
 
     async function getRoundInfo() {
         let roundId = await contract.methods.marketId().call()
+		roundId = web3.utils.toNumber(roundId)
         setRoundId(roundId.toString());
         let currentPrizePool = await contract.methods.getRoundAmount(roundId).call()
         setPrizePool(currentPrizePool.toString())
@@ -565,7 +566,7 @@ function App() {
 		let userBet = await contract.methods.marketIdToUserToTickets(roundId, wallet.address).call()
         setUserBet(userBet.toString())
 		let expiration = await contract.methods.marketIdToExpiration(roundId).call()
-        setExpiration(parseInt(expiration, 10) - parseInt((Date.now() / 1000)))
+        setExpiration(web3.utils.toNumber(expiration) - parseInt((Date.now() / 1000)))
 		let marketTickets = await contract.methods.marketIdToTotalTickets(roundId).call()
 		setMarketToTalTickets(marketTickets.toString())
 		let winningRounds = await contract.methods.filterPendingWinningEntriesForUser().call({from: wallet.address})
