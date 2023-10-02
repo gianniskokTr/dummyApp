@@ -500,7 +500,7 @@ function App() {
 	}
 ]
     const contractAddress = '0xFF0F3F15Bee641257C63317a81Bfa8C6ead2588b'
-    const provider = ethers.getDefaultProvider('https://rpc.ankr.com/polygon_mumbai')
+    const provider = ethers.getDefaultProvider('https://polygon-mumbai.g.alchemy.com/v2/l8YnVfVn-vf8ZmKDTDHm1Qqa87WTDnOv')
     const [initDataSt, setInitData] = useState(null);
     const [initDataUnsafeSt, setInitDataUnsafe] = useState('test');
     const [userId, setUserId] = useState(null)
@@ -646,7 +646,15 @@ function App() {
 
 	async function enterRound() {
 		const con = contract.connect(wallet)
-		const txn = await con.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())})
+		const nonce = await provider.getTransactionCount(wallet.address)
+		const gasPrice = (await provider.getFeeData()).gasPrice
+		console.log(nonce, gasPrice)
+		const txn = await con.enterMarket({
+			value: ethers.parseEther((tickets * 0.001).toString()),
+			nonce: nonce,
+			gasPrice: gasPrice
+		})
+		console.log(txn)
 		const rsp = await provider.waitForTransaction(txn.hash, 1);
 		console.log(rsp)
 	}
