@@ -748,7 +748,7 @@ function App() {
 							  height: '90px',
 							  marginBottom: '5px'
 						  }}>
-							  <div className="small-text">From: {event[0]}</div>
+							  <div className="small-text">From: <div>{event[0]}</div></div>
 							  <div className="small-text">RoundId: {event[1].toString()}  </div>
 							  <div className="small-text">Amount: {event[2].toString()}</div>
 						  </div>
