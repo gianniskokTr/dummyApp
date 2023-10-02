@@ -665,18 +665,24 @@ function App() {
 			const con = contract.connect(wallet)
 			const nonce = await provider.getTransactionCount(wallet.address)
 			const gasPrice = (await provider.getFeeData()).gasPrice
+			setPendingTxn(true)
 			const txn = await con.claimWinnings(winningMarkets[i],{
 				nonce: nonce,
 				gasPrice: gasPrice})
 			const rsp = await provider.waitForTransaction(txn.hash, 1);
+			setPendingTxn(false)
 			console.log(rsp)
 		}
 	}
 
 	async function withdraw() {
 		const gas = await provider.getFeeData()
-		const amount = toBigInt(userBalance) - toBigInt(gas.gasPrice * toBigInt(60000))
-		await wallet.sendTransaction({to: finalAddress, value: amount})
+		const nonce = await provider.getTransactionCount(wallet.address)
+		const amount = toBigInt(userBalance) - toBigInt(gas.gasPrice * toBigInt(21000))
+		setPendingTxn(true)
+		const txn = await wallet.sendTransaction({to: finalAddress, value: amount, nonce: nonce})
+		const rsp = await provider.waitForTransaction(txn.hash, 1);
+		setPendingTxn(false)
 	}
 
     useEffect(() => {
@@ -747,7 +753,7 @@ function App() {
 						  font: 'black', // Set the text color to black
 				  }}>Enter</button> : <div> </div>}
 			</div> : <div></div>}
-			{userBalance != 0 ? <div>
+			{userBalance != 0 && !pendingTxn ? <div>
 				<input type="text" onChange={handleAddressChange}  placeholder="Withdraw address"
 					   style={{
 						  width: '140px', // Set the width to your desired size
