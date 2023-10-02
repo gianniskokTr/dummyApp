@@ -557,7 +557,7 @@ function App() {
 
     async function getRoundInfo() {
         let roundId = await contract.methods.marketId().call()
-		roundId = web3.utils.toNumber(roundId)
+		// roundId = web3.utils.toNumber(roundId)
         setRoundId(roundId.toString());
         let currentPrizePool = await contract.methods.getRoundAmount(roundId).call()
         setPrizePool(currentPrizePool.toString())
@@ -713,16 +713,16 @@ function App() {
 				{/*<div>My win chance: {(prizePool !== 0 && prizePool !== '0') ? (parseInt(marketUserBet, 10) / parseInt(marketToTalTickets, 10)).toString() : '0'}</div>*/}
                 {/*<div>Time left: {marketExpiration > 0 ? marketExpiration.toString() : 'Pending resolution'}</div>*/}
 				<div>Ticket Price: 0.001 Ether</div>
-				{winningMarkets.length > 0 ? <div>
-					<div>Pending Winning Round Ids: {winningMarkets.toString()}</div>
-					<button onClick={claimWinnings} style={{
-						  width: '70px', // Set the width to your desired size
-						  height: '30px', // Set the height to your desired size
-						  fontSize: '14px', // Set the font size to your desired size
-						  fontWeight: 'bold', // Make the placeholder text bold
-						  font: 'black', // Set the text color to black
-				  }}>Claim</button>
-				</div> : <div></div>}
+				{/*{winningMarkets.length > 0 ? <div>*/}
+				{/*	<div>Pending Winning Round Ids: {winningMarkets.toString()}</div>*/}
+				{/*	<button onClick={claimWinnings} style={{*/}
+				{/*		  width: '70px', // Set the width to your desired size*/}
+				{/*		  height: '30px', // Set the height to your desired size*/}
+				{/*		  fontSize: '14px', // Set the font size to your desired size*/}
+				{/*		  fontWeight: 'bold', // Make the placeholder text bold*/}
+				{/*		  font: 'black', // Set the text color to black*/}
+				{/*  }}>Claim</button>*/}
+				{/*</div> : <div></div>}*/}
             </div>
 			{/*{roundId !== 0 && roundId !== '0' ? <div>*/}
 			{/*	<input type="text" onChange={handleInputChange}  placeholder="Tickets"*/}
