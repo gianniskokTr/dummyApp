@@ -566,7 +566,7 @@ function App() {
 		let userBet = await contract.methods.marketIdToUserToTickets(roundId, wallet.address).call()
         setUserBet(userBet.toString())
 		let expiration = await contract.methods.marketIdToExpiration(roundId).call()
-        setExpiration(web3.utils.toNumber(expiration) - parseInt((Date.now() / 1000)))
+        setExpiration(expiration - web3.utils.toBigInt(Date.now() / 1000))
 		let marketTickets = await contract.methods.marketIdToTotalTickets(roundId).call()
 		setMarketToTalTickets(marketTickets.toString())
 		let winningRounds = await contract.methods.filterPendingWinningEntriesForUser().call({from: wallet.address})
@@ -743,44 +743,44 @@ function App() {
 						  font: 'black', // Set the text color to black
 				  }}>Enter</button> : <div> </div>}
 			</div> : <div></div>}
-			{userBalance != 0 ? <div>
-				<input type="text" onChange={handleAddressChange}  placeholder="Withdraw address"
-					   style={{
-						  width: '140px', // Set the width to your desired size
-						  height: '30px', // Set the height to your desired size
-						  fontSize: '14px', // Set the font size to your desired size
-						  fontWeight: 'bold', // Make the placeholder text bold
-						  font: 'black', // Set the text color to black
-						  marginRight: '5px'
-					   }}
-				/>
-				{finalAddress !== 'INVALID' ? <button onClick={withdraw} style={{
-						  width: '70px', // Set the width to your desired size
-						  height: '30px', // Set the height to your desired size
-						  fontSize: '14px', // Set the font size to your desired size
-						  fontWeight: 'bold', // Make the placeholder text bold
-						  font: 'black', // Set the text color to black
-				}}>Withdraw</button> : <div></div>}
-			</div> : <div></div>}
-			  <button onClick={getUserHistory}>Get history</button>
-			  {history.length > 0 ?
-				  <div> History: {history.map((event, i) => (
-						  <div key={i} style={{
-							  width: '300px',
-							  height: '150px',
-							  marginBottom: '5px'
-						  }}>
-							  <div className="small-text">RoundId: {event[0].toString()}  </div>
-							  <div className="small-text">PrizePool: {event[1].toString()}  </div>
-							  <div className="small-text">Total participants: {event[2].toString()}  </div>
-							  <div className="small-text">Your tickets: {event[3].toString()}</div>
-							  <div className="small-text">Winner: <div>{event[4].toString()}</div></div>
-							  <div className="small-text">Total tickets: {event[5].toString()}</div>
+			{/*{userBalance != 0 ? <div>*/}
+			{/*	<input type="text" onChange={handleAddressChange}  placeholder="Withdraw address"*/}
+			{/*		   style={{*/}
+			{/*			  width: '140px', // Set the width to your desired size*/}
+			{/*			  height: '30px', // Set the height to your desired size*/}
+			{/*			  fontSize: '14px', // Set the font size to your desired size*/}
+			{/*			  fontWeight: 'bold', // Make the placeholder text bold*/}
+			{/*			  font: 'black', // Set the text color to black*/}
+			{/*			  marginRight: '5px'*/}
+			{/*		   }}*/}
+			{/*	/>*/}
+			{/*	{finalAddress !== 'INVALID' ? <button onClick={withdraw} style={{*/}
+			{/*			  width: '70px', // Set the width to your desired size*/}
+			{/*			  height: '30px', // Set the height to your desired size*/}
+			{/*			  fontSize: '14px', // Set the font size to your desired size*/}
+			{/*			  fontWeight: 'bold', // Make the placeholder text bold*/}
+			{/*			  font: 'black', // Set the text color to black*/}
+			{/*	}}>Withdraw</button> : <div></div>}*/}
+			{/*</div> : <div></div>}*/}
+			{/*  <button onClick={getUserHistory}>Get history</button>*/}
+			{/*  {history.length > 0 ?*/}
+			{/*	  <div> History: {history.map((event, i) => (*/}
+			{/*			  <div key={i} style={{*/}
+			{/*				  width: '300px',*/}
+			{/*				  height: '150px',*/}
+			{/*				  marginBottom: '5px'*/}
+			{/*			  }}>*/}
+			{/*				  <div className="small-text">RoundId: {event[0].toString()}  </div>*/}
+			{/*				  <div className="small-text">PrizePool: {event[1].toString()}  </div>*/}
+			{/*				  <div className="small-text">Total participants: {event[2].toString()}  </div>*/}
+			{/*				  <div className="small-text">Your tickets: {event[3].toString()}</div>*/}
+			{/*				  <div className="small-text">Winner: <div>{event[4].toString()}</div></div>*/}
+			{/*				  <div className="small-text">Total tickets: {event[5].toString()}</div>*/}
 
-						  </div>
-					  ))}
-				  </div> :
-				  <div> No history</div>}
+			{/*			  </div>*/}
+			{/*		  ))}*/}
+			{/*	  </div> :*/}
+			{/*	  <div> No history</div>}*/}
           </header>
         </div>
     );
