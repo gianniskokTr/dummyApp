@@ -567,9 +567,9 @@ function App() {
 		let expiration = await contract.methods.marketIdToExpiration(roundId).call()
         setExpiration(parseInt(expiration, 10) - parseInt((Date.now() / 1000)))
 		let marketTickets = await contract.methods.marketIdToTotalTickets(roundId).call()
-		setMarketToTalTickets(marketTickets)
+		setMarketToTalTickets(marketTickets.toString())
 		let winningRounds = await contract.methods.filterPendingWinningEntriesForUser().call({from: wallet.address})
-		setWinningMarkets(winningRounds)
+		setWinningMarkets(winningRounds.toString())
 		// getUserHistory()
     }
 
