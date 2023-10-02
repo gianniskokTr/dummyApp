@@ -500,7 +500,7 @@ function App() {
 	}
 ]
     const contractAddress = '0xFF0F3F15Bee641257C63317a81Bfa8C6ead2588b'
-    const provider = ethers.getDefaultProvider('https://polygon-mumbai.g.alchemy.com/v2/l8YnVfVn-vf8ZmKDTDHm1Qqa87WTDnOv')
+    const provider = ethers.getDefaultProvider('https://rpc.ankr.com/polygon_mumbai')
     const [initDataSt, setInitData] = useState(null);
     const [initDataUnsafeSt, setInitDataUnsafe] = useState('test');
     const [userId, setUserId] = useState(null)
@@ -646,7 +646,6 @@ function App() {
 
 	async function enterRound() {
 		const con = contract.connect(wallet)
-		console.log(await con.estimateGas.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())}))
 		const txn = await con.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())})
 		const rsp = await provider.waitForTransaction(txn.hash, 1);
 		console.log(rsp)
@@ -655,7 +654,6 @@ function App() {
 	async function claimWinnings() {
 		for (let i = 0; i<winningMarkets.length; i++) {
 			const con = contract.connect(wallet)
-			console.log(await con.estimateGas.enterMarket({value: ethers.parseEther((tickets * 0.001).toString())}))
 			const txn = await con.claimWinnings(winningMarkets[i])
 			const rsp = await provider.waitForTransaction(txn.hash, 1);
 			console.log(rsp)
@@ -664,7 +662,7 @@ function App() {
 
 	async function withdraw() {
 		const gas = await provider.getFeeData()
-		const amount = toBigInt(userBalance) - toBigInt(gas.gasPrice * toBigInt(21000))
+		const amount = toBigInt(userBalance) - toBigInt(gas.gasPrice * toBigInt(60000))
 		await wallet.sendTransaction({to: finalAddress, value: amount})
 	}
 
