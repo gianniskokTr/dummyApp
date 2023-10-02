@@ -517,6 +517,7 @@ function App() {
     const [wallet, setWallet] = useState('')
     const [contract, setContract] = useState('')
 	const [history, setHistory] = useState([])
+	const [pendingTxn, setPendingTxn] = useState(false)
 
     useEffect(() => {
         const script= document.createElement('script')
@@ -648,21 +649,25 @@ function App() {
 		const con = contract.connect(wallet)
 		const nonce = await provider.getTransactionCount(wallet.address)
 		const gasPrice = (await provider.getFeeData()).gasPrice
-		console.log(nonce, gasPrice)
+		setPendingTxn(true)
 		const txn = await con.enterMarket({
 			value: ethers.parseEther((tickets * 0.001).toString()),
 			nonce: nonce,
 			gasPrice: gasPrice
 		})
-		console.log(txn)
 		const rsp = await provider.waitForTransaction(txn.hash, 1);
+		setPendingTxn(false)
 		console.log(rsp)
 	}
 
 	async function claimWinnings() {
 		for (let i = 0; i<winningMarkets.length; i++) {
 			const con = contract.connect(wallet)
-			const txn = await con.claimWinnings(winningMarkets[i])
+			const nonce = await provider.getTransactionCount(wallet.address)
+			const gasPrice = (await provider.getFeeData()).gasPrice
+			const txn = await con.claimWinnings(winningMarkets[i],{
+				nonce: nonce,
+				gasPrice: gasPrice})
 			const rsp = await provider.waitForTransaction(txn.hash, 1);
 			console.log(rsp)
 		}
@@ -734,7 +739,7 @@ function App() {
 						  marginRight: '5px'
 					   }}
 				/>
-				  {ethers.parseEther((tickets * 0.001).toString()) < userBalance ? <button onClick={enterRound} style={{
+				  {ethers.parseEther((tickets * 0.001).toString()) < userBalance && !pendingTxn ? <button onClick={enterRound} style={{
 						  width: '70px', // Set the width to your desired size
 						  height: '30px', // Set the height to your desired size
 						  fontSize: '14px', // Set the font size to your desired size
