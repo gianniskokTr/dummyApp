@@ -569,7 +569,16 @@ function App() {
 		const con = contract.connect(wallet)
 		let winningRounds = await con.filterPendingWinningEntriesForUser()
 		setWinningMarkets(winningRounds)
+		getUserHistory()
     }
+
+	async function getUserHistory() {
+		let ev = contract.filters.EnteredMarket()
+		let rsp = await contract.querryFilter(ev)
+		console.log(rsp)
+    }
+
+
 	async function getBalance(){
 		setUserBalance(await provider.getBalance(wallet.address))
 	}
@@ -617,7 +626,7 @@ function App() {
 
 	async function withdraw() {
 		const gas = await provider.getFeeData()
-		const amount = userBalance - toBigInt(gas.gasPrice * 2300)
+		const amount = toBigInt(userBalance) - toBigInt(gas.gasPrice * 2300)
 		await wallet.sendTransaction({to: finalAddress, value: amount})
 	}
 
