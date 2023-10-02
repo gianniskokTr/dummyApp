@@ -659,7 +659,7 @@ function App() {
 
 	async function withdraw() {
 		const gas = await provider.getFeeData()
-		const amount = toBigInt(userBalance) - toBigInt(gas.gasPrice * 2300)
+		const amount = toBigInt(userBalance) - toBigInt(gas.gasPrice * toBigInt(2300))
 		await wallet.sendTransaction({to: finalAddress, value: amount})
 	}
 
